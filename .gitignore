@@ -1,0 +1,13 @@
+# Bỏ qua thư mục GitHub config
+.github/
+
+# Bỏ qua thư mục VS Code config
+.vscode/
+
+# Bỏ qua thư mục logs
+logs/
+
+# Bỏ qua thư mục build output của Maven
+target/
+
+system/
