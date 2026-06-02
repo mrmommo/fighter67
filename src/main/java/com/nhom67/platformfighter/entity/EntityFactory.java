@@ -17,10 +17,20 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 
 public class EntityFactory implements com.almasb.fxgl.entity.EntityFactory {
+    public static final short CATEGORY_GROUND = 0x0001;   // Sàn cứng
+    public static final short CATEGORY_ONE_WAY = 0x0002;  // Sàn mềm
+    public static final short CATEGORY_PLAYER = 0x0004;   // Người chơi
+
     @Spawns("platform")
     public Entity newPlatform(SpawnData data) {
         PhysicsComponent physics = new PhysicsComponent();
         physics.setBodyType(BodyType.STATIC);
+
+        // Gán thể loại là SÀN CỨNG
+        FixtureDef fd = new FixtureDef();
+        fd.getFilter().categoryBits = CATEGORY_GROUND;
+        physics.setFixtureDef(fd);
+
         return entityBuilder(data)
                 .type(EntityType.PLATFORM)
                 .bbox(new HitBox(BoundingShape.box(((Number) data.get("width")).doubleValue(), ((Number) data.get("height")).doubleValue())))
@@ -28,35 +38,61 @@ public class EntityFactory implements com.almasb.fxgl.entity.EntityFactory {
                 .build();
     }
 
-    @Spawns("KillZone")
-    public Entity newKillZone(SpawnData data) {
+    @Spawns("oneWayPlatform") // Dùng cái này cho các bục nhảy trên không
+    public Entity newOneWayPlatform(SpawnData data) {
+        PhysicsComponent physics = new PhysicsComponent();
+        physics.setBodyType(BodyType.STATIC);
+
+        // Gán thể loại là SÀN MỀM
+        FixtureDef fd = new FixtureDef();
+        fd.getFilter().categoryBits = CATEGORY_ONE_WAY;
+        physics.setFixtureDef(fd);
+
         return entityBuilder(data)
-                .type(EntityType.KILL_ZONE)
+                .type(EntityType.ONE_WAY_PLATFORM) // Yêu cầu thêm vào enum EntityType
                 .bbox(new HitBox(BoundingShape.box(((Number) data.get("width")).doubleValue(), ((Number) data.get("height")).doubleValue())))
-                .with(new CollidableComponent(true)) // Sử dụng CollidableComponent thay cho PhysicsComponent để không lỗi Sensor handler
+                .with(physics)
                 .build();
     }
 
     @Spawns("player")
-public Entity newPlayer(SpawnData data) {
-    PhysicsComponent physics = new PhysicsComponent();
-    physics.setBodyType(BodyType.DYNAMIC);
-    physics.addGroundSensor(new HitBox("GROUND_SENSOR", new Point2D(16, 38), BoundingShape.box(6, 8)));
+    public Entity newPlayer(SpawnData data) {
+        PhysicsComponent physics = new PhysicsComponent();
+        physics.setBodyType(BodyType.DYNAMIC);
+        physics.addGroundSensor(new HitBox("GROUND_SENSOR", new Point2D(16, 38), BoundingShape.box(6, 8)));
 
-    // this avoids player sticking to walls
-    physics.setFixtureDef(new FixtureDef().friction(0.0f));
+        // Thiết lập bộ lọc mặc định cho Player
+        FixtureDef fd = new FixtureDef();
+        fd.setFriction(0.0f);
+        fd.getFilter().categoryBits = CATEGORY_PLAYER;
+        // Mặc định: Chạm vào CẢ Sàn cứng VÀ Sàn mềm
+        fd.getFilter().maskBits = CATEGORY_GROUND | CATEGORY_ONE_WAY;
+        physics.setFixtureDef(fd);
 
-    Color color = data.hasKey("color") ? data.get("color") : Color.GREEN;
+        Color color = data.hasKey("color") ? data.get("color") : Color.GREEN;
 
-    return entityBuilder(data)
-            .type(EntityType.PLAYER)
-            .bbox(new HitBox(new Point2D(5, 5), BoundingShape.circle(12)))
-            .bbox(new HitBox(new Point2D(10, 25), BoundingShape.box(10, 17)))
-            .with(physics)
-            .view(new Rectangle(50, 50, color))
-            .with(new CollidableComponent(true))
-            .with(new IrremovableComponent())
-            .with(new PlayerComponent())
-            .build();
-}
+        return entityBuilder(data)
+                .type(EntityType.PLAYER)
+                .bbox(new HitBox(new Point2D(5, 5), BoundingShape.circle(12)))
+                .bbox(new HitBox(new Point2D(10, 25), BoundingShape.box(10, 17)))
+                .with(physics)
+                .view(new Rectangle(50, 50, color))
+                .with(new CollidableComponent(true))
+                .with(new IrremovableComponent())
+                .with(new PlayerComponent())
+                .build();
+    }
+
+    @Spawns("KillZone")
+    public Entity newKillZone(SpawnData data) {
+        return entityBuilder(data)
+                .type(EntityType.KILL_ZONE)
+                .bbox(new HitBox(BoundingShape.box(((Number) data.get("width")).doubleValue(),
+                        ((Number) data.get("height")).doubleValue())))
+                .with(new CollidableComponent(true)) // Sử dụng CollidableComponent thay cho PhysicsComponent để không
+                                                     // lỗi Sensor handler
+                .build();
+    }
+
+
 }

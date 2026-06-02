@@ -4,5 +4,6 @@ public enum EntityType {
     PLAYER,
     PLATFORM,
     KILL_ZONE,
-    BACKGROUND
+    BACKGROUND,
+    ONE_WAY_PLATFORM
 }

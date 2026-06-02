@@ -47,6 +47,6 @@
   <object id="15" type="platform" x="799" y="735" width="97" height="33"/>
   <object id="16" type="platform" x="929" y="768" width="63" height="32"/>
   <object id="17" type="platform" x="577.333" y="736" width="65.3333" height="62.6667"/>
-  <object id="19" type="platform" x="450.667" y="638.667" width="665.333" height="30.6667"/>
+  <object id="19" type="oneWayPlatform" x="450.667" y="638.667" width="665.333" height="30.6667"/>
  </objectgroup>
 </map>
