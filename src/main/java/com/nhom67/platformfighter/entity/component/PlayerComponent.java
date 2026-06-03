@@ -36,6 +36,17 @@ public class PlayerComponent extends Component {
     public boolean isDropping = false;
     private boolean isDashing = false;
 
+    // --- HEALTH & LIVES ---
+    private int maxHealth = 100;
+    private int currentHealth = 100;
+    private int maxLives = 3;
+    private int currentLives = 3;
+    private boolean isDead = false;
+
+    // --- RESPAWN ---
+    private double spawnX;
+    private double spawnY;
+
     @Override
     public void onAdded() {
         leftTapTimer = newLocalTimer();
@@ -45,6 +56,9 @@ public class PlayerComponent extends Component {
         dashCooldownTimer.capture();
         leftTapTimer.capture();
         rightTapTimer.capture();
+
+        spawnX = entity.getX();
+        spawnY = entity.getY();
     }
 
     public void setMoveDirection(int dir) {
@@ -172,4 +186,63 @@ public class PlayerComponent extends Component {
 
         physics.setVelocityX(currentSpeedX);
     }
+
+    // --- HEALTH & LIVES METHODS ---
+
+    public void takeDamage(int amount) {
+        if (isDead) return;
+        
+        currentHealth -= amount;
+        if (currentHealth <= 0) {
+            currentHealth = 0;
+            loseLife();
+        }
+    }
+
+    public void loseLife() {
+        if (isDead) return;
+
+        currentLives--;
+        currentHealth = maxHealth;
+        
+        if (currentLives <= 0) {
+            isDead = true;
+        } else {
+            respawn();
+        }
+    }
+
+    public void respawn() {
+        physics.overwritePosition(new javafx.geometry.Point2D(spawnX, spawnY));
+        physics.setVelocityX(0);
+        physics.setVelocityY(0);
+        currentSpeedX = 0;
+        isDropping = false;
+        isDashing = false;
+        moveDirection = 0;
+    }
+
+    public void reset() {
+        currentHealth = maxHealth;
+        currentLives = maxLives;
+        isDead = false;
+        respawn();
+    }
+
+    // --- GETTERS & SETTERS ---
+    
+    public int getMaxHealth() { return maxHealth; }
+    public void setMaxHealth(int maxHealth) { this.maxHealth = maxHealth; }
+    
+    public int getCurrentHealth() { return currentHealth; }
+    public void setCurrentHealth(int currentHealth) { this.currentHealth = currentHealth; }
+    
+    public int getMaxLives() { return maxLives; }
+    public void setMaxLives(int maxLives) { this.maxLives = maxLives; }
+    
+    public int getCurrentLives() { return currentLives; }
+    public void setCurrentLives(int currentLives) { this.currentLives = currentLives; }
+    
+    public boolean isDead() { return isDead; }
+    public void setDead(boolean dead) { isDead = dead; }
 }
