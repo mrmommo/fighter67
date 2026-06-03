@@ -1,5 +1,6 @@
 package com.nhom67.platformfighter.entity.component;
 
+import com.almasb.fxgl.entity.Entity;
 import com.almasb.fxgl.entity.component.Component;
 import com.almasb.fxgl.physics.PhysicsComponent;
 import com.almasb.fxgl.time.LocalTimer;
@@ -9,6 +10,7 @@ import static com.almasb.fxgl.dsl.FXGL.*;
 import com.almasb.fxgl.physics.box2d.dynamics.Fixture;
 import com.almasb.fxgl.physics.box2d.dynamics.Filter;
 import com.nhom67.platformfighter.entity.EntityFactory;
+import com.nhom67.platformfighter.entity.EntityType;
 import javafx.util.Duration;
 
 public class PlayerComponent extends Component {
@@ -29,10 +31,21 @@ public class PlayerComponent extends Component {
     private LocalTimer dashCooldownTimer;
     private LocalTimer dropTimer;
 
-    private double dashSpeed = 1200;
+    private double dashSpeed = 800;
 
     public boolean isDropping = false;
     private boolean isDashing = false;
+
+    // --- HEALTH & LIVES ---
+    private int maxHealth = 100;
+    private int currentHealth = 100;
+    private int maxLives = 3;
+    private int currentLives = 3;
+    private boolean isDead = false;
+
+    // --- RESPAWN ---
+    private double spawnX;
+    private double spawnY;
 
     @Override
     public void onAdded() {
@@ -43,6 +56,9 @@ public class PlayerComponent extends Component {
         dashCooldownTimer.capture();
         leftTapTimer.capture();
         rightTapTimer.capture();
+
+        spawnX = entity.getX();
+        spawnY = entity.getY();
     }
 
     public void setMoveDirection(int dir) {
@@ -98,24 +114,37 @@ public class PlayerComponent extends Component {
     public void onUpdate(double tpf) {
         // 1. Quản lý trạng thái tụt xuống qua sàn mềm
         if (isDropping) {
-            physics.setVelocityY(800);
 
             if (dropTimer.elapsed(Duration.seconds(0.25))) {
                 isDropping = false;
             }
         }
 
-        // 2. --- LOGIC QUYẾT ĐỊNH XUYÊN ĐỊA HÌNH (GUN MAYHEM STYLE) ---
+        // 2. --- LOGIC QUYẾT ĐỊNH XUYÊN ĐỊA HÌNH NÂNG CAO ---
         boolean isMovingUp = physics.getVelocityY() < -10;
+
+        boolean isInsideOrBelowPlatform = false;
+        if (getGameWorld() != null) {
+            for (Entity platform : getGameWorld().getEntitiesByType(EntityType.ONE_WAY_PLATFORM)) {
+                // SỬA LỖI TẠI ĐÂY: Sử dụng trực tiếp hàm isCollidingWith của FXGL thay vì getBBoxComponent
+                if (getEntity().isColliding(platform)) {
+                    if (getEntity().getBottomY() > platform.getY() + 4) {
+                        isInsideOrBelowPlatform = true;
+                        break;
+                    }
+                }
+            }
+        }
+
         short newMaskBits;
 
-        if (isMovingUp || isDropping) {
+        if (isMovingUp || isDropping || isInsideOrBelowPlatform) {
             newMaskBits = EntityFactory.CATEGORY_GROUND;
         } else {
             newMaskBits = (short) (EntityFactory.CATEGORY_GROUND | EntityFactory.CATEGORY_ONE_WAY);
         }
 
-        // SỬA LỖI TẠI ĐÂY: Sử dụng vòng lặp for-each thay vì while-loop và dùng trực tiếp thuộc tính .maskBits
+        // Cập nhật MaskBits vào các Fixture vật lý
         if (physics.getBody() != null) {
             for (Fixture f : physics.getBody().getFixtures()) {
                 Filter filter = f.getFilterData();
@@ -157,4 +186,63 @@ public class PlayerComponent extends Component {
 
         physics.setVelocityX(currentSpeedX);
     }
+
+    // --- HEALTH & LIVES METHODS ---
+
+    public void takeDamage(int amount) {
+        if (isDead) return;
+        
+        currentHealth -= amount;
+        if (currentHealth <= 0) {
+            currentHealth = 0;
+            loseLife();
+        }
+    }
+
+    public void loseLife() {
+        if (isDead) return;
+
+        currentLives--;
+        currentHealth = maxHealth;
+        
+        if (currentLives <= 0) {
+            isDead = true;
+        } else {
+            respawn();
+        }
+    }
+
+    public void respawn() {
+        physics.overwritePosition(new javafx.geometry.Point2D(spawnX, spawnY));
+        physics.setVelocityX(0);
+        physics.setVelocityY(0);
+        currentSpeedX = 0;
+        isDropping = false;
+        isDashing = false;
+        moveDirection = 0;
+    }
+
+    public void reset() {
+        currentHealth = maxHealth;
+        currentLives = maxLives;
+        isDead = false;
+        respawn();
+    }
+
+    // --- GETTERS & SETTERS ---
+    
+    public int getMaxHealth() { return maxHealth; }
+    public void setMaxHealth(int maxHealth) { this.maxHealth = maxHealth; }
+    
+    public int getCurrentHealth() { return currentHealth; }
+    public void setCurrentHealth(int currentHealth) { this.currentHealth = currentHealth; }
+    
+    public int getMaxLives() { return maxLives; }
+    public void setMaxLives(int maxLives) { this.maxLives = maxLives; }
+    
+    public int getCurrentLives() { return currentLives; }
+    public void setCurrentLives(int currentLives) { this.currentLives = currentLives; }
+    
+    public boolean isDead() { return isDead; }
+    public void setDead(boolean dead) { isDead = dead; }
 }

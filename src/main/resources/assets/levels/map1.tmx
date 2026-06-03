@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.12.2" orientation="orthogonal" renderorder="right-down" width="60" height="34" tilewidth="32" tileheight="32" infinite="0" nextlayerid="3" nextobjectid="21">
+<map version="1.10" tiledversion="1.12.2" orientation="orthogonal" renderorder="right-down" width="60" height="34" tilewidth="32" tileheight="32" infinite="0" nextlayerid="3" nextobjectid="28">
  <tileset firstgid="1" name="Tileset" tilewidth="32" tileheight="32" spacing="1" margin="1" tilecount="176" columns="16">
   <image source="Tileset.png" width="544" height="384"/>
  </tileset>
@@ -44,9 +44,15 @@
  <objectgroup id="2" name="Object Layer 1">
   <object id="7" type="platform" x="321" y="767" width="254" height="32"/>
   <object id="8" type="platform" x="641" y="767" width="125" height="32"/>
-  <object id="15" type="platform" x="799" y="735" width="97" height="33"/>
+  <object id="15" type="platform" x="767.585" y="735" width="161.576" height="33"/>
   <object id="16" type="platform" x="929" y="768" width="63" height="32"/>
   <object id="17" type="platform" x="577.333" y="736" width="65.3333" height="62.6667"/>
   <object id="19" type="oneWayPlatform" x="450.667" y="638.667" width="665.333" height="30.6667"/>
+  <object id="21" type="platform" x="996.06" y="735.723" width="161.576" height="33"/>
+  <object id="22" type="platform" x="1181.06" y="739.213" width="161.576" height="33"/>
+  <object id="23" type="platform" x="1095.54" y="772.374" width="161.576" height="33"/>
+  <object id="24" type="platform" x="1312" y="768" width="161.576" height="33"/>
+  <object id="25" type="platform" x="1216" y="640" width="161.576" height="33"/>
+  <object id="26" type="platform" x="1088" y="672" width="161.576" height="33"/>
  </objectgroup>
 </map>

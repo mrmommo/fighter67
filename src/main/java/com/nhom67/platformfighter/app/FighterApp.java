@@ -16,11 +16,17 @@ import com.nhom67.platformfighter.controllers.Controllers;
 import com.nhom67.platformfighter.entity.EntityFactory;
 import com.nhom67.platformfighter.map.MapLoader;
 import com.nhom67.platformfighter.map.MapRegistry;
+import com.nhom67.platformfighter.scene.ui.GameHUD;
+import com.nhom67.platformfighter.core.RoundManager;
+import com.nhom67.platformfighter.entity.component.PlayerComponent;
+import com.nhom67.platformfighter.core.WinnerInfo;
 
 public class FighterApp extends GameApplication {
     private Entity player;
     private Entity player2;
     Controllers controller = new Controllers();
+    private GameHUD gameHUD;
+    private RoundManager roundManager;
 
     @Override
     protected void initSettings(GameSettings settings) {
@@ -37,18 +43,24 @@ public class FighterApp extends GameApplication {
 
     @Override
     protected void initUI() {
-        // Tạo một nút "Game End" hiển thị trên màn hình chơi (HUD)
-        Button btnGameEnd = getUIFactoryService().newButton("Game End");
-        btnGameEnd.setFocusTraversable(false);
-        btnGameEnd.setTranslateX(1920 - 200); // Góc trên bên phải
-        btnGameEnd.setTranslateY(50);
-
-        // Khi nhấn nút, hiển thị màn hình GameOver
-        btnGameEnd.setOnAction(e -> {
-            getSceneService().pushSubScene(new GameOverScene());
-        });
-        // Thêm nút vào giao diện HUD của GameScene
-        addUINode(btnGameEnd);
+        gameHUD = new GameHUD();
+        PlayerComponent p1Comp = player.getComponent(PlayerComponent.class);
+        PlayerComponent p2Comp = player2.getComponent(PlayerComponent.class);
+        
+        gameHUD.initHUD(p1Comp, p2Comp);
+        roundManager = new RoundManager();
+    }
+    
+    @Override
+    protected void onUpdate(double tpf) {
+        if (gameHUD != null) {
+            gameHUD.onUpdate(tpf);
+        }
+        if (roundManager != null && player != null && player2 != null) {
+            PlayerComponent p1Comp = player.getComponent(PlayerComponent.class);
+            PlayerComponent p2Comp = player2.getComponent(PlayerComponent.class);
+            roundManager.checkWinCondition(p1Comp, p2Comp);
+        }
     }
 
     // Map được chọn từ màn hình SelectScene
