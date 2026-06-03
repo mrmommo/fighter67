@@ -65,6 +65,15 @@ public class InputHandler {
             }
         }, KeyCode.S);
 
+        getInput().addAction(new UserAction("Shoot") {
+            @Override
+            protected void onActionBegin() {
+                if (player1 != null) {
+                    player1.getComponent(PlayerComponent.class).shoot();
+                }
+            }
+        }, KeyCode.F);
+
         getInput().addAction(new UserAction("Move Left 2") {
             @Override
             protected void onActionBegin() {
@@ -112,5 +121,14 @@ public class InputHandler {
                 }
             }
         }, KeyCode.DOWN);
+
+        getInput().addAction(new UserAction("Shoot 2") {
+            @Override
+            protected void onActionBegin() {
+                if (player2 != null) {
+                    player2.getComponent(PlayerComponent.class).shoot();
+                }
+            }
+        }, KeyCode.L);
     }
 }
