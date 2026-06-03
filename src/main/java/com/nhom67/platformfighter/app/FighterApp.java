@@ -60,6 +60,7 @@ public class FighterApp extends GameApplication {
             PlayerComponent p1Comp = player.getComponent(PlayerComponent.class);
             PlayerComponent p2Comp = player2.getComponent(PlayerComponent.class);
             roundManager.checkWinCondition(p1Comp, p2Comp);
+            roundManager.onUpdate(tpf);
         }
     }
 

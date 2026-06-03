@@ -5,5 +5,7 @@ public enum EntityType {
     PLATFORM,
     KILL_ZONE,
     BACKGROUND,
-    ONE_WAY_PLATFORM
+    ONE_WAY_PLATFORM,
+    BULLET,
+    CRATE
 }

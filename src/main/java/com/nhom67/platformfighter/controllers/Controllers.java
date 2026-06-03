@@ -3,8 +3,10 @@ package com.nhom67.platformfighter.controllers;
 import static com.almasb.fxgl.dsl.FXGL.*;
 
 import com.almasb.fxgl.entity.Entity;
+import com.nhom67.platformfighter.controllers.collisions.BulletPlayerCollision;
 import com.nhom67.platformfighter.controllers.collisions.CollisionRegistry;
 import com.nhom67.platformfighter.controllers.collisions.PlayerKillZoneCollision;
+import com.nhom67.platformfighter.controllers.collisions.CratePlayerCollision;
 import com.nhom67.platformfighter.controllers.input.InputHandler;
 
 public class Controllers {
@@ -19,6 +21,9 @@ public class Controllers {
 
     public void initPhysics() {
         collisionRegistry.addCollision(new PlayerKillZoneCollision());
+        collisionRegistry.addCollision(new BulletPlayerCollision());
+        collisionRegistry.addCollision(new CratePlayerCollision());
+
         collisionRegistry.registerAll();
         getPhysicsWorld().setGravity(0, 1500);
     }

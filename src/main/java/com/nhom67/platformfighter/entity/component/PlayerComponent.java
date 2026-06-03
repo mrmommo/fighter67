@@ -11,6 +11,7 @@ import com.almasb.fxgl.physics.box2d.dynamics.Fixture;
 import com.almasb.fxgl.physics.box2d.dynamics.Filter;
 import com.nhom67.platformfighter.entity.EntityFactory;
 import com.nhom67.platformfighter.entity.EntityType;
+import com.nhom67.platformfighter.entity.component.WeaponData;
 import javafx.util.Duration;
 
 public class PlayerComponent extends Component {
@@ -23,6 +24,7 @@ public class PlayerComponent extends Component {
     private double acceleration = 2500;
     private double friction = 2000;
     private int moveDirection = 0; // -1 left, 1 right, 0 stop
+    private int facingDirection = 1; // 1 right, -1 left
 
     private double fastFallAccel = 900;
 
@@ -47,15 +49,27 @@ public class PlayerComponent extends Component {
     private double spawnX;
     private double spawnY;
 
+    // --- WEAPON ---
+    private WeaponData currentWeapon = WeaponData.pistol();
+    private int currentAmmo = currentWeapon.maxAmmo();
+    private boolean isReloading = false;
+    private LocalTimer shootTimer;
+    private LocalTimer reloadTimer;
+
     @Override
     public void onAdded() {
         leftTapTimer = newLocalTimer();
         rightTapTimer = newLocalTimer();
         dashCooldownTimer = newLocalTimer();
         dropTimer = newLocalTimer();
+        shootTimer = newLocalTimer();
+        reloadTimer = newLocalTimer();
+        
         dashCooldownTimer.capture();
         leftTapTimer.capture();
         rightTapTimer.capture();
+        shootTimer.capture();
+        reloadTimer.capture();
 
         spawnX = entity.getX();
         spawnY = entity.getY();
@@ -64,6 +78,7 @@ public class PlayerComponent extends Component {
     public void setMoveDirection(int dir) {
         this.moveDirection = dir;
         if (dir != 0) {
+            this.facingDirection = dir;
             getEntity().setScaleX(dir);
         }
     }
@@ -120,6 +135,14 @@ public class PlayerComponent extends Component {
             }
         }
 
+        // --- WEAPON RELOAD LOGIC ---
+        if (isReloading && currentWeapon.isDefault()) {
+            if (reloadTimer.elapsed(Duration.seconds(2.0))) {
+                currentAmmo = currentWeapon.maxAmmo();
+                isReloading = false;
+            }
+        }
+
         // 2. --- LOGIC QUYẾT ĐỊNH XUYÊN ĐỊA HÌNH NÂNG CAO ---
         boolean isMovingUp = physics.getVelocityY() < -10;
 
@@ -139,9 +162,9 @@ public class PlayerComponent extends Component {
         short newMaskBits;
 
         if (isMovingUp || isDropping || isInsideOrBelowPlatform) {
-            newMaskBits = EntityFactory.CATEGORY_GROUND;
+            newMaskBits = (short) (EntityFactory.CATEGORY_GROUND | EntityFactory.CATEGORY_CRATE);
         } else {
-            newMaskBits = (short) (EntityFactory.CATEGORY_GROUND | EntityFactory.CATEGORY_ONE_WAY);
+            newMaskBits = (short) (EntityFactory.CATEGORY_GROUND | EntityFactory.CATEGORY_ONE_WAY | EntityFactory.CATEGORY_CRATE);
         }
 
         // Cập nhật MaskBits vào các Fixture vật lý
@@ -187,6 +210,49 @@ public class PlayerComponent extends Component {
         physics.setVelocityX(currentSpeedX);
     }
 
+    // --- WEAPON & SHOOTING METHODS ---
+
+    public void shoot() {
+        if (isDead || isReloading) return;
+        
+        if (shootTimer.elapsed(Duration.seconds(currentWeapon.fireRate()))) {
+            if (currentAmmo > 0) {
+                currentAmmo--;
+                shootTimer.capture();
+                
+                spawn("bullet", new com.almasb.fxgl.entity.SpawnData(entity.getX() + (facingDirection == 1 ? 50 : -20), entity.getY() + 15)
+                        .put("bulletData", currentWeapon.bulletData())
+                        .put("facingRight", facingDirection == 1)
+                        .put("owner", entity));
+                
+                if (currentAmmo <= 0) {
+                    handleEmptyAmmo();
+                }
+            } else {
+                handleEmptyAmmo();
+            }
+        }
+    }
+
+    private void handleEmptyAmmo() {
+        if (currentWeapon.isDefault()) {
+            isReloading = true;
+            reloadTimer.capture();
+        } else {
+            equipWeapon(WeaponData.pistol());
+        }
+    }
+
+    public void equipWeapon(WeaponData weapon) {
+        this.currentWeapon = weapon;
+        this.currentAmmo = weapon.maxAmmo();
+        this.isReloading = false;
+    }
+
+    public void applyKnockback(double forceX) {
+        this.currentSpeedX += forceX;
+    }
+
     // --- HEALTH & LIVES METHODS ---
 
     public void takeDamage(int amount) {
@@ -226,6 +292,7 @@ public class PlayerComponent extends Component {
         currentHealth = maxHealth;
         currentLives = maxLives;
         isDead = false;
+        equipWeapon(WeaponData.pistol());
         respawn();
     }
 
