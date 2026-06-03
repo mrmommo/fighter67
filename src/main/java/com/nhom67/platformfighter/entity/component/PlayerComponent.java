@@ -1,5 +1,6 @@
 package com.nhom67.platformfighter.entity.component;
 
+import com.almasb.fxgl.entity.Entity;
 import com.almasb.fxgl.entity.component.Component;
 import com.almasb.fxgl.physics.PhysicsComponent;
 import com.almasb.fxgl.time.LocalTimer;
@@ -9,6 +10,7 @@ import static com.almasb.fxgl.dsl.FXGL.*;
 import com.almasb.fxgl.physics.box2d.dynamics.Fixture;
 import com.almasb.fxgl.physics.box2d.dynamics.Filter;
 import com.nhom67.platformfighter.entity.EntityFactory;
+import com.nhom67.platformfighter.entity.EntityType;
 import javafx.util.Duration;
 
 public class PlayerComponent extends Component {
@@ -29,7 +31,7 @@ public class PlayerComponent extends Component {
     private LocalTimer dashCooldownTimer;
     private LocalTimer dropTimer;
 
-    private double dashSpeed = 1200;
+    private double dashSpeed = 800;
 
     public boolean isDropping = false;
     private boolean isDashing = false;
@@ -98,24 +100,37 @@ public class PlayerComponent extends Component {
     public void onUpdate(double tpf) {
         // 1. Quản lý trạng thái tụt xuống qua sàn mềm
         if (isDropping) {
-            physics.setVelocityY(800);
 
             if (dropTimer.elapsed(Duration.seconds(0.25))) {
                 isDropping = false;
             }
         }
 
-        // 2. --- LOGIC QUYẾT ĐỊNH XUYÊN ĐỊA HÌNH (GUN MAYHEM STYLE) ---
+        // 2. --- LOGIC QUYẾT ĐỊNH XUYÊN ĐỊA HÌNH NÂNG CAO ---
         boolean isMovingUp = physics.getVelocityY() < -10;
+
+        boolean isInsideOrBelowPlatform = false;
+        if (getGameWorld() != null) {
+            for (Entity platform : getGameWorld().getEntitiesByType(EntityType.ONE_WAY_PLATFORM)) {
+                // SỬA LỖI TẠI ĐÂY: Sử dụng trực tiếp hàm isCollidingWith của FXGL thay vì getBBoxComponent
+                if (getEntity().isColliding(platform)) {
+                    if (getEntity().getBottomY() > platform.getY() + 4) {
+                        isInsideOrBelowPlatform = true;
+                        break;
+                    }
+                }
+            }
+        }
+
         short newMaskBits;
 
-        if (isMovingUp || isDropping) {
+        if (isMovingUp || isDropping || isInsideOrBelowPlatform) {
             newMaskBits = EntityFactory.CATEGORY_GROUND;
         } else {
             newMaskBits = (short) (EntityFactory.CATEGORY_GROUND | EntityFactory.CATEGORY_ONE_WAY);
         }
 
-        // SỬA LỖI TẠI ĐÂY: Sử dụng vòng lặp for-each thay vì while-loop và dùng trực tiếp thuộc tính .maskBits
+        // Cập nhật MaskBits vào các Fixture vật lý
         if (physics.getBody() != null) {
             for (Fixture f : physics.getBody().getFixtures()) {
                 Filter filter = f.getFilterData();
