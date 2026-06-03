@@ -112,5 +112,6 @@ public class InputHandler {
                 }
             }
         }, KeyCode.DOWN);
+
     }
 }

@@ -12,6 +12,7 @@ import com.almasb.fxgl.physics.box2d.dynamics.BodyType;
 import static com.almasb.fxgl.dsl.FXGL.*;
 import com.almasb.fxgl.physics.box2d.dynamics.FixtureDef;
 import com.nhom67.platformfighter.entity.component.PlayerComponent;
+import com.nhom67.platformfighter.entity.component.AnimationComponent;
 import javafx.geometry.Point2D;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
@@ -59,7 +60,7 @@ public class EntityFactory implements com.almasb.fxgl.entity.EntityFactory {
     public Entity newPlayer(SpawnData data) {
         PhysicsComponent physics = new PhysicsComponent();
         physics.setBodyType(BodyType.DYNAMIC);
-        physics.addGroundSensor(new HitBox("GROUND_SENSOR", new Point2D(16, 38), BoundingShape.box(6, 8)));
+        physics.addGroundSensor(new HitBox("GROUND_SENSOR", new Point2D(27, 58), BoundingShape.box(6, 8)));
 
         // Thiết lập bộ lọc mặc định cho Player
         FixtureDef fd = new FixtureDef();
@@ -70,16 +71,17 @@ public class EntityFactory implements com.almasb.fxgl.entity.EntityFactory {
         physics.setFixtureDef(fd);
 
         Color color = data.hasKey("color") ? data.get("color") : Color.GREEN;
+        String prefix = color.equals(Color.GREEN) ? "p1" : "p2";
 
         return entityBuilder(data)
                 .type(EntityType.PLAYER)
-                .bbox(new HitBox(new Point2D(5, 5), BoundingShape.circle(12)))
-                .bbox(new HitBox(new Point2D(10, 25), BoundingShape.box(10, 17)))
+                .bbox(new HitBox(new Point2D(22, 11), BoundingShape.circle(8)))
+                .bbox(new HitBox(new Point2D(22, 27), BoundingShape.box(16, 32)))
                 .with(physics)
-                .view(new Rectangle(50, 50, color))
                 .with(new CollidableComponent(true))
                 .with(new IrremovableComponent())
                 .with(new PlayerComponent())
+                .with(new AnimationComponent(prefix))
                 .build();
     }
 
