@@ -44,6 +44,8 @@ public class PlayerComponent extends Component {
     private int maxLives = 3;
     private int currentLives = 3;
     private boolean isDead = false;
+    
+    private double lastBottomY = 0; // TRACK PREVIOUS Y TO PREVENT FAST-FALL GLITCH
 
     // --- RESPAWN ---
     private double spawnX;
@@ -58,6 +60,8 @@ public class PlayerComponent extends Component {
 
     @Override
     public void onAdded() {
+        physics = entity.getComponent(PhysicsComponent.class); // FIX #2
+
         leftTapTimer = newLocalTimer();
         rightTapTimer = newLocalTimer();
         dashCooldownTimer = newLocalTimer();
@@ -122,16 +126,18 @@ public class PlayerComponent extends Component {
         if (!isDropping && physics.isOnGround()) {
             isDropping = true;
             dropTimer.capture();
+            physics.setVelocityY(50);  // FIX #5: ADD: kick player downward immediately
         }
     }
 
     @Override
     public void onUpdate(double tpf) {
+
         // 1. Quản lý trạng thái tụt xuống qua sàn mềm
         if (isDropping) {
 
-            if (dropTimer.elapsed(Duration.seconds(0.25))) {
-                isDropping = false;
+            if (dropTimer.elapsed(Duration.seconds(0.3))) { // FIX #5: CHANGE: 0.25 -> 0.3
+                isDropping = false; // FIX #5
             }
         }
 
@@ -143,17 +149,28 @@ public class PlayerComponent extends Component {
             }
         }
 
-        // 2. --- LOGIC QUYẾT ĐỊNH XUYÊN ĐỊA HÌNH NÂNG CAO ---
-        boolean isMovingUp = physics.getVelocityY() < -10;
+        // 2. --- LOGIC QUYẾT ĐỊNH XUYÊN ĐỊA HÌNH NÂNG CAO (ONE-WAY PLATFORM) ---
+        // QUAN TRỌNG: Phải xét isMovingUp và isDropping bên ngoài vòng lặp va chạm!
+        // Nếu không, Box2D sẽ tính toán va chạm trước khi game kịp đổi mask xuyên qua.
+        boolean isMovingUp = physics.getVelocityY() < -50;
+        boolean isInsidePlatform = false;
 
-        boolean isInsideOrBelowPlatform = false;
         if (getGameWorld() != null) {
             for (Entity platform : getGameWorld().getEntitiesByType(EntityType.ONE_WAY_PLATFORM)) {
-                // SỬA LỖI TẠI ĐÂY: Sử dụng trực tiếp hàm isCollidingWith của FXGL thay vì getBBoxComponent
                 if (getEntity().isColliding(platform)) {
-                    if (getEntity().getBottomY() > platform.getY() + 4) {
-                        isInsideOrBelowPlatform = true;
-                        break;
+                    double playerBottomY = getEntity().getBottomY();
+                    double platformTop    = platform.getY();
+
+                    // Nếu chân đang kẹt bên trong sàn (thấp hơn mặt trên sàn một chút)
+                    if (playerBottomY > platformTop + 5.0) {
+                        // Để ngăn lỗi lọt hố do rơi quá nhanh, ta kiểm tra thêm lastBottomY
+                        // Nếu khung hình trước đang ở trên sàn, mà khung hình này lọt xuống dưới -> KHÔNG cho xuyên qua
+                        if (lastBottomY <= platformTop + 5.0) {
+                            // Giữ nguyên isInsidePlatform = false để Box2D đẩy nhân vật ngược lên mặt sàn
+                        } else {
+                            isInsidePlatform = true;
+                            break;
+                        }
                     }
                 }
             }
@@ -161,11 +178,15 @@ public class PlayerComponent extends Component {
 
         short newMaskBits;
 
-        if (isMovingUp || isDropping || isInsideOrBelowPlatform) {
+        // Bất cứ khi nào ĐANG BAY LÊN, ĐANG TỤT XUỐNG, hoặc ĐANG KẸT TRONG SÀN -> Xuyên qua
+        if (isMovingUp || isDropping || isInsidePlatform) {
             newMaskBits = (short) (EntityFactory.CATEGORY_GROUND | EntityFactory.CATEGORY_CRATE);
         } else {
+            // Còn lại -> Va chạm bình thường (Đứng được trên sàn)
             newMaskBits = (short) (EntityFactory.CATEGORY_GROUND | EntityFactory.CATEGORY_ONE_WAY | EntityFactory.CATEGORY_CRATE);
         }
+
+        lastBottomY = getEntity().getBottomY(); // LƯU LẠI VỊ TRÍ CHÂN CHO KHUNG HÌNH SAU
 
         // Cập nhật MaskBits vào các Fixture vật lý
         if (physics.getBody() != null) {
@@ -312,4 +333,8 @@ public class PlayerComponent extends Component {
     
     public boolean isDead() { return isDead; }
     public void setDead(boolean dead) { isDead = dead; }
+    
+    public int getCurrentAmmo() { return currentAmmo; }
+    public boolean isReloading() { return isReloading; }
+    public int getFacingDirection() { return facingDirection; }
 }
