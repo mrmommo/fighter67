@@ -47,7 +47,7 @@ public class GameHUD {
         bg1.setStroke(Color.BLACK);
         bg1.setStrokeWidth(1);
         p1AmmoHUD = new StackPane(bg1, p1AmmoText);
-        p1AmmoHUD.setTranslateX(10);
+        p1AmmoHUD.setTranslateX(17);
         p1AmmoHUD.setTranslateY(-20);
         p1.getEntity().getViewComponent().addChild(p1AmmoHUD);
 
@@ -59,7 +59,7 @@ public class GameHUD {
         bg2.setStroke(Color.BLACK);
         bg2.setStrokeWidth(1);
         p2AmmoHUD = new StackPane(bg2, p2AmmoText);
-        p2AmmoHUD.setTranslateX(10);
+        p2AmmoHUD.setTranslateX(17);
         p2AmmoHUD.setTranslateY(-20);
         p2.getEntity().getViewComponent().addChild(p2AmmoHUD);
     }
@@ -70,12 +70,10 @@ public class GameHUD {
 
         if (p1 != null && p1AmmoHUD != null) {
             p1AmmoText.setText(p1.isReloading() ? "0" : String.valueOf(p1.getCurrentAmmo()));
-            p1AmmoHUD.setScaleX(p1.getFacingDirection() == -1 ? -1 : 1);
         }
 
         if (p2 != null && p2AmmoHUD != null) {
             p2AmmoText.setText(p2.isReloading() ? "0" : String.valueOf(p2.getCurrentAmmo()));
-            p2AmmoHUD.setScaleX(p2.getFacingDirection() == -1 ? -1 : 1);
         }
     }
 }

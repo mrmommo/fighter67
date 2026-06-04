@@ -64,7 +64,7 @@ public class EntityFactory implements com.almasb.fxgl.entity.EntityFactory {
     public Entity newPlayer(SpawnData data) {
         PhysicsComponent physics = new PhysicsComponent();
         physics.setBodyType(BodyType.DYNAMIC);
-        physics.addGroundSensor(new HitBox("GROUND_SENSOR", new Point2D(27, 58), BoundingShape.box(6, 8)));
+        physics.addGroundSensor(new HitBox("GROUND_SENSOR", new Point2D(29, 58), BoundingShape.box(6, 8)));
 
                 // Thiết lập bộ lọc mặc định cho Player
                 FixtureDef fd = new FixtureDef();
@@ -79,8 +79,8 @@ public class EntityFactory implements com.almasb.fxgl.entity.EntityFactory {
 
         return entityBuilder(data)
                 .type(EntityType.PLAYER)
-                .bbox(new HitBox(new Point2D(22, 11), BoundingShape.circle(8)))
-                .bbox(new HitBox(new Point2D(22, 27), BoundingShape.box(16, 32)))
+                .bbox(new HitBox(new Point2D(24, 11), BoundingShape.circle(8)))
+                .bbox(new HitBox(new Point2D(24, 27), BoundingShape.box(16, 32)))
                 .with(physics)
                 .with(new CollidableComponent(true))
                 .with(new IrremovableComponent())
