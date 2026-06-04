@@ -69,6 +69,10 @@ public class AnimationComponent extends Component {
             texture.loopNoOverride(nextChannel);
         }
 
+        if (player != null) {
+            texture.setScaleX(player.getFacingDirection());
+        }
+
         texture.onUpdate(tpf);
     }
 }

@@ -83,7 +83,6 @@ public class PlayerComponent extends Component {
         this.moveDirection = dir;
         if (dir != 0) {
             this.facingDirection = dir;
-            getEntity().setScaleX(dir);
         }
     }
 
@@ -241,7 +240,7 @@ public class PlayerComponent extends Component {
                 currentAmmo--;
                 shootTimer.capture();
                 
-                spawn("bullet", new com.almasb.fxgl.entity.SpawnData(entity.getX() + (facingDirection == 1 ? 50 : -20), entity.getY() + 15)
+                spawn("bullet", new com.almasb.fxgl.entity.SpawnData(entity.getX() + 32 + (facingDirection * 18), entity.getY() + 15)
                         .put("bulletData", currentWeapon.bulletData())
                         .put("facingRight", facingDirection == 1)
                         .put("owner", entity));
