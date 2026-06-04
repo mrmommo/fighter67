@@ -13,6 +13,7 @@ import static com.almasb.fxgl.dsl.FXGL.*;
 import com.almasb.fxgl.physics.box2d.dynamics.FixtureDef;
 import com.nhom67.platformfighter.entity.component.BulletData;
 import com.nhom67.platformfighter.entity.component.PlayerComponent;
+import com.nhom67.platformfighter.entity.component.AnimationComponent;
 import javafx.geometry.Point2D;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
@@ -59,11 +60,11 @@ public class EntityFactory implements com.almasb.fxgl.entity.EntityFactory {
                                 .build();
         }
 
-        @Spawns("player")
-        public Entity newPlayer(SpawnData data) {
-                PhysicsComponent physics = new PhysicsComponent();
-                physics.setBodyType(BodyType.DYNAMIC);
-                physics.addGroundSensor(new HitBox("GROUND_SENSOR", new Point2D(27, 58), BoundingShape.box(6, 8)));
+    @Spawns("player")
+    public Entity newPlayer(SpawnData data) {
+        PhysicsComponent physics = new PhysicsComponent();
+        physics.setBodyType(BodyType.DYNAMIC);
+        physics.addGroundSensor(new HitBox("GROUND_SENSOR", new Point2D(27, 58), BoundingShape.box(6, 8)));
 
                 // Thiết lập bộ lọc mặc định cho Player
                 FixtureDef fd = new FixtureDef();
@@ -73,18 +74,20 @@ public class EntityFactory implements com.almasb.fxgl.entity.EntityFactory {
                 fd.getFilter().maskBits = CATEGORY_GROUND | CATEGORY_ONE_WAY;
                 physics.setFixtureDef(fd);
 
-                Color color = data.hasKey("color") ? data.get("color") : Color.GREEN;
+        Color color = data.hasKey("color") ? data.get("color") : Color.GREEN;
+        String prefix = color.equals(Color.GREEN) ? "p1" : "p2";
 
-                return entityBuilder(data)
-                                .type(EntityType.PLAYER)
-                                .bbox(new HitBox(new Point2D(22, 11), BoundingShape.circle(8)))
-                                .bbox(new HitBox(new Point2D(22, 27), BoundingShape.box(16, 32)))
-                                .with(physics)
-                                .with(new CollidableComponent(true))
-                                .with(new IrremovableComponent())
-                                .with(new PlayerComponent())
-                                .build();
-        }
+        return entityBuilder(data)
+                .type(EntityType.PLAYER)
+                .bbox(new HitBox(new Point2D(22, 11), BoundingShape.circle(8)))
+                .bbox(new HitBox(new Point2D(22, 27), BoundingShape.box(16, 32)))
+                .with(physics)
+                .with(new CollidableComponent(true))
+                .with(new IrremovableComponent())
+                .with(new PlayerComponent())
+                .with(new AnimationComponent(prefix))
+                .build();
+    }
 
         @Spawns("KillZone")
         public Entity newKillZone(SpawnData data) {
