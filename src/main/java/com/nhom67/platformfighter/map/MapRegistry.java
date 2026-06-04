@@ -8,8 +8,11 @@ public enum MapRegistry {
     MAP_2(
             "map2.tmx",
             "Loopdrop",
-            "maps/map2background.png");
-
+            "maps/map2background.png"),
+    MAP_3(
+            "map3.tmx",
+            "Skyline",
+            "maps/map3background.png");    
     private final String tmxFile;
     private final String displayName;
     private final String bgPath;
