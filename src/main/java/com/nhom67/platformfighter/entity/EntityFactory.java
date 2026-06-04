@@ -14,6 +14,7 @@ import com.almasb.fxgl.physics.box2d.dynamics.FixtureDef;
 import com.nhom67.platformfighter.entity.component.BulletData;
 import com.nhom67.platformfighter.entity.component.PlayerComponent;
 import com.nhom67.platformfighter.entity.component.AnimationComponent;
+import com.nhom67.platformfighter.entity.component.GunViewComponent;
 import javafx.geometry.Point2D;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
@@ -85,6 +86,7 @@ public class EntityFactory implements com.almasb.fxgl.entity.EntityFactory {
                 .with(new CollidableComponent(true))
                 .with(new IrremovableComponent())
                 .with(new PlayerComponent())
+                .with(new GunViewComponent())
                 .with(new AnimationComponent(prefix))
                 .build();
     }
@@ -106,14 +108,14 @@ public class EntityFactory implements com.almasb.fxgl.entity.EntityFactory {
                 BulletData bd = data.get("bulletData");
                 boolean facingRight = data.get("facingRight");
                 Entity owner = data.get("owner");
+                com.nhom67.platformfighter.entity.component.WeaponType weaponType = data.hasKey("weaponType") ? data.get("weaponType") : null;
 
                 return entityBuilder(data)
                                 .type(EntityType.BULLET)
                                 .bbox(new HitBox(BoundingShape.box(bd.hitboxWidth(), bd.hitboxHeight())))
                                 .with(new CollidableComponent(true))
-                                .with(new com.nhom67.platformfighter.entity.component.BulletComponent(bd, owner,
-                                                facingRight))
-                                .view(new Rectangle(bd.hitboxWidth(), bd.hitboxHeight(), Color.YELLOW))
+                                .with(new com.nhom67.platformfighter.entity.component.BulletComponent(bd, owner, facingRight))
+                                .with(new com.nhom67.platformfighter.entity.component.BulletViewComponent(weaponType, bd, facingRight))
                                 .build();
         }
 

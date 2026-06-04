@@ -9,6 +9,7 @@ public class BulletComponent extends Component {
     private Entity owner;
     private boolean facingRight;
     private double distanceTravelled = 0;
+    private double timeAlive = 0;
 
     public BulletComponent(BulletData data, Entity owner, boolean facingRight) {
         this.data = data;
@@ -18,6 +19,12 @@ public class BulletComponent extends Component {
 
     @Override
     public void onUpdate(double tpf) {
+        timeAlive += tpf;
+        if (timeAlive >= data.lifespan()) {
+            entity.removeFromWorld();
+            return;
+        }
+
         double moveDist = data.speed() * tpf;
         if (facingRight) {
             entity.translateX(moveDist);
