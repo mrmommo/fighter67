@@ -10,6 +10,6 @@ public class AppSceneFactory extends SceneFactory {
     @Override
     public FXGLMenu newMainMenu() {
         // Trả về custom menu của chúng ta
-        return new MenuScene(MenuType.MAIN_MENU);
+        return new MenuScene();
     }
 }
