@@ -44,7 +44,11 @@ public class PlayerComponent extends Component {
     private int maxLives = 3;
     private int currentLives = 3;
     private boolean isDead = false;
-    
+
+    private boolean isHitStunned = false;
+    private LocalTimer hitStunTimer;
+    private double hitStunDuration = 0.05;
+
     private double lastBottomY = 0; // TRACK PREVIOUS Y TO PREVENT FAST-FALL GLITCH
 
     // --- RESPAWN ---
@@ -68,7 +72,8 @@ public class PlayerComponent extends Component {
         dropTimer = newLocalTimer();
         shootTimer = newLocalTimer();
         reloadTimer = newLocalTimer();
-        
+        hitStunTimer = newLocalTimer();
+
         dashCooldownTimer.capture();
         leftTapTimer.capture();
         rightTapTimer.capture();
@@ -125,13 +130,25 @@ public class PlayerComponent extends Component {
         if (!isDropping && physics.isOnGround()) {
             isDropping = true;
             dropTimer.capture();
-            physics.setVelocityY(50);  // FIX #5: ADD: kick player downward immediately
+            physics.setVelocityY(50); // FIX #5: ADD: kick player downward immediately
         }
     }
 
     @Override
     public void onUpdate(double tpf) {
+        // --- HITSTUN (Đứng hình & mất trọng lực khi trúng đạn) ---
+        if (isHitStunned) {
+            if (hitStunTimer.elapsed(Duration.seconds(hitStunDuration))) {
+                isHitStunned = false;
+            } else {
+                // Ép vận tốc về 0 để lơ lửng và đứng im hoàn toàn
+                physics.setVelocityX(0);
+                physics.setVelocityY(0);
+                return; // Bỏ qua tất cả logic di chuyển phía dưới
+            }
+        }
 
+        // --- BẮT ĐẦU LOGIC XUYÊN ĐỊA HÌNH GỐC CỦA BẠN ---mềm
         // 1. Quản lý trạng thái tụt xuống qua sàn mềm
         if (isDropping) {
 
@@ -158,12 +175,13 @@ public class PlayerComponent extends Component {
             for (Entity platform : getGameWorld().getEntitiesByType(EntityType.ONE_WAY_PLATFORM)) {
                 if (getEntity().isColliding(platform)) {
                     double playerBottomY = getEntity().getBottomY();
-                    double platformTop    = platform.getY();
+                    double platformTop = platform.getY();
 
                     // Nếu chân đang kẹt bên trong sàn (thấp hơn mặt trên sàn một chút)
                     if (playerBottomY > platformTop + 5.0) {
                         // Để ngăn lỗi lọt hố do rơi quá nhanh, ta kiểm tra thêm lastBottomY
-                        // Nếu khung hình trước đang ở trên sàn, mà khung hình này lọt xuống dưới -> KHÔNG cho xuyên qua
+                        // Nếu khung hình trước đang ở trên sàn, mà khung hình này lọt xuống dưới ->
+                        // KHÔNG cho xuyên qua
                         if (lastBottomY <= platformTop + 5.0) {
                             // Giữ nguyên isInsidePlatform = false để Box2D đẩy nhân vật ngược lên mặt sàn
                         } else {
@@ -177,12 +195,14 @@ public class PlayerComponent extends Component {
 
         short newMaskBits;
 
-        // Bất cứ khi nào ĐANG BAY LÊN, ĐANG TỤT XUỐNG, hoặc ĐANG KẸT TRONG SÀN -> Xuyên qua
+        // Bất cứ khi nào ĐANG BAY LÊN, ĐANG TỤT XUỐNG, hoặc ĐANG KẸT TRONG SÀN -> Xuyên
+        // qua
         if (isMovingUp || isDropping || isInsidePlatform) {
             newMaskBits = (short) (EntityFactory.CATEGORY_GROUND | EntityFactory.CATEGORY_CRATE);
         } else {
             // Còn lại -> Va chạm bình thường (Đứng được trên sàn)
-            newMaskBits = (short) (EntityFactory.CATEGORY_GROUND | EntityFactory.CATEGORY_ONE_WAY | EntityFactory.CATEGORY_CRATE);
+            newMaskBits = (short) (EntityFactory.CATEGORY_GROUND | EntityFactory.CATEGORY_ONE_WAY
+                    | EntityFactory.CATEGORY_CRATE);
         }
 
         lastBottomY = getEntity().getBottomY(); // LƯU LẠI VỊ TRÍ CHÂN CHO KHUNG HÌNH SAU
@@ -214,16 +234,32 @@ public class PlayerComponent extends Component {
         }
 
         if (moveDirection != 0 && !isDashing) {
-            currentSpeedX += moveDirection * acceleration * tpf;
-            if (currentSpeedX > maxSpeed) currentSpeedX = maxSpeed;
-            if (currentSpeedX < -maxSpeed) currentSpeedX = -maxSpeed;
+            if (moveDirection == 1) {
+                if (currentSpeedX < maxSpeed) {
+                    currentSpeedX += acceleration * tpf;
+                    if (currentSpeedX > maxSpeed) currentSpeedX = maxSpeed;
+                } else {
+                    // Nếu đang bay đi nhanh hơn maxSpeed (do knockback), để ma sát hãm lại dần dần
+                    currentSpeedX -= friction * tpf;
+                }
+            } else if (moveDirection == -1) {
+                if (currentSpeedX > -maxSpeed) {
+                    currentSpeedX -= acceleration * tpf;
+                    if (currentSpeedX < -maxSpeed) currentSpeedX = -maxSpeed;
+                } else {
+                    // Nếu đang bay đi nhanh hơn maxSpeed (do knockback), để ma sát hãm lại dần dần
+                    currentSpeedX += friction * tpf;
+                }
+            }
         } else if (!isDashing) {
             if (currentSpeedX > 0) {
                 currentSpeedX -= friction * tpf;
-                if (currentSpeedX < 0) currentSpeedX = 0;
+                if (currentSpeedX < 0)
+                    currentSpeedX = 0;
             } else if (currentSpeedX < 0) {
                 currentSpeedX += friction * tpf;
-                if (currentSpeedX > 0) currentSpeedX = 0;
+                if (currentSpeedX > 0)
+                    currentSpeedX = 0;
             }
         }
 
@@ -233,18 +269,37 @@ public class PlayerComponent extends Component {
     // --- WEAPON & SHOOTING METHODS ---
 
     public void shoot() {
-        if (isDead || isReloading) return;
-        
+        if (isDead || isReloading)
+            return;
+
         if (shootTimer.elapsed(Duration.seconds(currentWeapon.fireRate()))) {
             if (currentAmmo > 0) {
                 currentAmmo--;
                 shootTimer.capture();
-                
-                spawn("bullet", new com.almasb.fxgl.entity.SpawnData(entity.getX() + 32 + (facingDirection * 18), entity.getY() + 15)
-                        .put("bulletData", currentWeapon.bulletData())
-                        .put("facingRight", facingDirection == 1)
-                        .put("owner", entity));
-                
+                // Tính toán vị trí Y của viên đạn (chỗ xả đạn) tuỳ theo từng súng
+                // Số Y càng LỚN thì đạn bắn ra càng THẤP XUỐNG
+                double bulletSpawnY = entity.getY();
+                switch (currentWeapon.type()) {
+                    case PISTOL:
+                        bulletSpawnY += 27;
+                        break;
+                    case SHOTGUN:
+                        bulletSpawnY += 15;
+                        break;
+                    case RIFLE:
+                        bulletSpawnY += 27;
+                        break;
+                    default:
+                        bulletSpawnY += 27;
+                        break;
+                }
+
+                spawn("bullet",
+                        new com.almasb.fxgl.entity.SpawnData(entity.getX() + 32 + (facingDirection * 18), bulletSpawnY)
+                                .put("bulletData", currentWeapon.bulletData())
+                                .put("facingRight", facingDirection == 1)
+                                .put("weaponType", currentWeapon.type())
+                                .put("owner", entity));
                 if (currentAmmo <= 0) {
                     handleEmptyAmmo();
                 }
@@ -272,13 +327,29 @@ public class PlayerComponent extends Component {
     public void applyKnockback(double forceX) {
         this.currentSpeedX += forceX;
     }
+    
+    public void applyStun(double duration) {
+        this.hitStunDuration = duration;
+        this.isHitStunned = true;
+        this.hitStunTimer.capture();
+    }
+    
+    public void setCurrentSpeedX(double speed) {
+        this.currentSpeedX = speed;
+    }
+    
+    public double getCurrentSpeedX() {
+        return this.currentSpeedX;
+    }
 
     // --- HEALTH & LIVES METHODS ---
 
     public void takeDamage(int amount) {
-        if (isDead) return;
-        
+        if (isDead)
+            return;
+
         currentHealth -= amount;
+
         if (currentHealth <= 0) {
             currentHealth = 0;
             loseLife();
@@ -286,11 +357,12 @@ public class PlayerComponent extends Component {
     }
 
     public void loseLife() {
-        if (isDead) return;
+        if (isDead)
+            return;
 
         currentLives--;
         currentHealth = maxHealth;
-        
+
         if (currentLives <= 0) {
             isDead = true;
         } else {
@@ -305,7 +377,9 @@ public class PlayerComponent extends Component {
         currentSpeedX = 0;
         isDropping = false;
         isDashing = false;
+        isHitStunned = false; // Xóa trạng thái stun nếu còn dư
         moveDirection = 0;
+        equipWeapon(WeaponData.pistol()); // Reset vũ khí về mặc định
     }
 
     public void reset() {
@@ -317,23 +391,60 @@ public class PlayerComponent extends Component {
     }
 
     // --- GETTERS & SETTERS ---
-    
-    public int getMaxHealth() { return maxHealth; }
-    public void setMaxHealth(int maxHealth) { this.maxHealth = maxHealth; }
-    
-    public int getCurrentHealth() { return currentHealth; }
-    public void setCurrentHealth(int currentHealth) { this.currentHealth = currentHealth; }
-    
-    public int getMaxLives() { return maxLives; }
-    public void setMaxLives(int maxLives) { this.maxLives = maxLives; }
-    
-    public int getCurrentLives() { return currentLives; }
-    public void setCurrentLives(int currentLives) { this.currentLives = currentLives; }
-    
-    public boolean isDead() { return isDead; }
-    public void setDead(boolean dead) { isDead = dead; }
-    
-    public int getCurrentAmmo() { return currentAmmo; }
-    public boolean isReloading() { return isReloading; }
-    public int getFacingDirection() { return facingDirection; }
+
+    public int getMaxHealth() {
+        return maxHealth;
+    }
+
+    public void setMaxHealth(int maxHealth) {
+        this.maxHealth = maxHealth;
+    }
+
+    public int getCurrentHealth() {
+        return currentHealth;
+    }
+
+    public void setCurrentHealth(int currentHealth) {
+        this.currentHealth = currentHealth;
+    }
+
+    public int getMaxLives() {
+        return maxLives;
+    }
+
+    public void setMaxLives(int maxLives) {
+        this.maxLives = maxLives;
+    }
+
+    public int getCurrentLives() {
+        return currentLives;
+    }
+
+    public void setCurrentLives(int currentLives) {
+        this.currentLives = currentLives;
+    }
+
+    public boolean isDead() {
+        return isDead;
+    }
+
+    public void setDead(boolean dead) {
+        isDead = dead;
+    }
+
+    public int getCurrentAmmo() {
+        return currentAmmo;
+    }
+
+    public boolean isReloading() {
+        return isReloading;
+    }
+
+    public int getFacingDirection() {
+        return facingDirection;
+    }
+
+    public WeaponData getCurrentWeapon() {
+        return currentWeapon;
+    }
 }

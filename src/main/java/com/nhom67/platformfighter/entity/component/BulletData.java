@@ -5,7 +5,8 @@ public record BulletData(
                 double speed, // tốc độ bay (pixels/s)
                 double hitboxWidth, // chiều rộng hitbox
                 double hitboxHeight, // chiều cao hitbox
-                double knockback // lực đẩy khi trúng
+                double knockback, // lực đẩy khi trúng
+                double lifespan // thời gian tồn tại (giây)
 
 ) {
 }
