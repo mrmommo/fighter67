@@ -132,6 +132,7 @@ public class PlayerComponent extends Component {
 
     @Override
     public void onUpdate(double tpf) {
+
         // 1. Quản lý trạng thái tụt xuống qua sàn mềm
         if (isDropping) {
 
@@ -332,4 +333,8 @@ public class PlayerComponent extends Component {
     
     public boolean isDead() { return isDead; }
     public void setDead(boolean dead) { isDead = dead; }
+    
+    public int getCurrentAmmo() { return currentAmmo; }
+    public boolean isReloading() { return isReloading; }
+    public int getFacingDirection() { return facingDirection; }
 }
