@@ -237,7 +237,8 @@ public class PlayerComponent extends Component {
             if (moveDirection == 1) {
                 if (currentSpeedX < maxSpeed) {
                     currentSpeedX += acceleration * tpf;
-                    if (currentSpeedX > maxSpeed) currentSpeedX = maxSpeed;
+                    if (currentSpeedX > maxSpeed)
+                        currentSpeedX = maxSpeed;
                 } else {
                     // Nếu đang bay đi nhanh hơn maxSpeed (do knockback), để ma sát hãm lại dần dần
                     currentSpeedX -= friction * tpf;
@@ -245,7 +246,8 @@ public class PlayerComponent extends Component {
             } else if (moveDirection == -1) {
                 if (currentSpeedX > -maxSpeed) {
                     currentSpeedX -= acceleration * tpf;
-                    if (currentSpeedX < -maxSpeed) currentSpeedX = -maxSpeed;
+                    if (currentSpeedX < -maxSpeed)
+                        currentSpeedX = -maxSpeed;
                 } else {
                     // Nếu đang bay đi nhanh hơn maxSpeed (do knockback), để ma sát hãm lại dần dần
                     currentSpeedX += friction * tpf;
@@ -327,17 +329,17 @@ public class PlayerComponent extends Component {
     public void applyKnockback(double forceX) {
         this.currentSpeedX += forceX;
     }
-    
+
     public void applyStun(double duration) {
         this.hitStunDuration = duration;
         this.isHitStunned = true;
         this.hitStunTimer.capture();
     }
-    
+
     public void setCurrentSpeedX(double speed) {
         this.currentSpeedX = speed;
     }
-    
+
     public double getCurrentSpeedX() {
         return this.currentSpeedX;
     }
@@ -380,6 +382,9 @@ public class PlayerComponent extends Component {
         isHitStunned = false; // Xóa trạng thái stun nếu còn dư
         moveDirection = 0;
         equipWeapon(WeaponData.pistol()); // Reset vũ khí về mặc định
+        
+        // Gọi jump nhẹ để player rơi xuống tự nhiên (tránh bị lơ lửng)
+        physics.setVelocityY(50);
     }
 
     public void reset() {

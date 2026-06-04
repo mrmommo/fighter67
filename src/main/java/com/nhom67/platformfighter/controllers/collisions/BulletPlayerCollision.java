@@ -19,19 +19,20 @@ public class BulletPlayerCollision implements CollisionHandlerInterface {
                 if (bulletComp.getOwner() != player) {
                     int damage = bulletComp.getData().damage();
                     boolean willDie = playerComp.getCurrentHealth() <= damage;
-                    
+
                     playerComp.takeDamage(damage);
-                    
-                    // Chỉ đẩy lùi nếu viên đạn không giết chết người chơi (để tránh lỗi bị đẩy lùi sau khi hồi sinh)
+
+                    // Chỉ đẩy lùi nếu viên đạn không giết chết người chơi (để tránh lỗi bị đẩy lùi
+                    // sau khi hồi sinh)
                     if (!willDie && !playerComp.isDead()) {
                         double knockbackForce = bulletComp.getData().knockback();
                         double dirForce = bulletComp.isFacingRight() ? knockbackForce : -knockbackForce;
-                        
+
                         // Nếu người chơi đang di chuyển (speedX > 5)
                         if (Math.abs(playerComp.getCurrentSpeedX()) > 5) {
                             playerComp.applyStun(0.05); // Đứng yên trong 0.05s
                             playerComp.setCurrentSpeedX(0); // Mất quán tính hiện tại
-                            
+
                             // Đợi 0.05s (stun xong) rồi mới áp dụng 90% knockback
                             com.almasb.fxgl.dsl.FXGL.getGameTimer().runOnceAfter(() -> {
                                 if (player.isActive() && !playerComp.isDead()) {
@@ -43,6 +44,11 @@ public class BulletPlayerCollision implements CollisionHandlerInterface {
                             playerComp.applyKnockback(dirForce);
                         }
                     }
+
+                    // Hiển thị chữ "HIT" tại vị trí va chạm
+                    com.nhom67.platformfighter.entity.component.BulletViewComponent.spawnHitEffect(
+                            bullet.getX(), bullet.getY()
+                    );
 
                     bullet.removeFromWorld();
                 }
