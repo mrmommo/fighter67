@@ -3,6 +3,7 @@ package com.nhom67.platformfighter.map;
 import com.almasb.fxgl.entity.level.Level;
 import com.almasb.fxgl.entity.level.tiled.TMXLevelLoader;
 import com.nhom67.platformfighter.entity.EntityType;
+import com.almasb.fxgl.texture.Texture;
 import static com.almasb.fxgl.dsl.FXGL.*;
 
 public class MapLoader {
@@ -26,10 +27,12 @@ public class MapLoader {
         double mapWidth = level.getWidth();
         double mapHeight = level.getHeight();
 
-        // Background entity
+        // Background entity — scale vừa đúng kích thước map, nằm hoàn toàn trong kill zone
+        Texture bgTexture = texture(map.getBgPath(), mapWidth, mapHeight);
         entityBuilder()
+                .at(0, 0)
                 .type(EntityType.BACKGROUND)
-                .view(map.getBgPath())
+                .view(bgTexture)
                 .zIndex(-100)
                 .buildAndAttach();
 

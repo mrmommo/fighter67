@@ -62,11 +62,11 @@ public class EntityFactory implements com.almasb.fxgl.entity.EntityFactory {
                                 .build();
         }
 
-    @Spawns("player")
-    public Entity newPlayer(SpawnData data) {
-        PhysicsComponent physics = new PhysicsComponent();
-        physics.setBodyType(BodyType.DYNAMIC);
-        physics.addGroundSensor(new HitBox("GROUND_SENSOR", new Point2D(29, 58), BoundingShape.box(6, 8)));
+        @Spawns("player")
+        public Entity newPlayer(SpawnData data) {
+                PhysicsComponent physics = new PhysicsComponent();
+                physics.setBodyType(BodyType.DYNAMIC);
+                physics.addGroundSensor(new HitBox("GROUND_SENSOR", new Point2D(29, 58), BoundingShape.box(6, 8)));
 
                 // Thiết lập bộ lọc mặc định cho Player
                 FixtureDef fd = new FixtureDef();
@@ -76,21 +76,21 @@ public class EntityFactory implements com.almasb.fxgl.entity.EntityFactory {
                 fd.getFilter().maskBits = CATEGORY_GROUND | CATEGORY_ONE_WAY;
                 physics.setFixtureDef(fd);
 
-        Color color = data.hasKey("color") ? data.get("color") : Color.GREEN;
-        String prefix = color.equals(Color.GREEN) ? "p1" : "p2";
+                Color color = data.hasKey("color") ? data.get("color") : Color.GREEN;
+                String prefix = color.equals(Color.GREEN) ? "p1" : "p2";
 
-        return entityBuilder(data)
-                .type(EntityType.PLAYER)
-                .bbox(new HitBox(new Point2D(24, 11), BoundingShape.circle(8)))
-                .bbox(new HitBox(new Point2D(24, 27), BoundingShape.box(16, 32)))
-                .with(physics)
-                .with(new CollidableComponent(true))
-                .with(new IrremovableComponent())
-                .with(new PlayerComponent())
-                .with(new GunViewComponent())
-                .with(new AnimationComponent(prefix))
-                .build();
-    }
+                return entityBuilder(data)
+                                .type(EntityType.PLAYER)
+                                .bbox(new HitBox(new Point2D(24, 11), BoundingShape.circle(8)))
+                                .bbox(new HitBox(new Point2D(24, 27), BoundingShape.box(16, 32)))
+                                .with(physics)
+                                .with(new CollidableComponent(true))
+                                .with(new IrremovableComponent())
+                                .with(new PlayerComponent())
+                                .with(new GunViewComponent())
+                                .with(new AnimationComponent(prefix))
+                                .build();
+        }
 
         @Spawns("KillZone")
         public Entity newKillZone(SpawnData data) {
@@ -109,14 +109,18 @@ public class EntityFactory implements com.almasb.fxgl.entity.EntityFactory {
                 BulletData bd = data.get("bulletData");
                 boolean facingRight = data.get("facingRight");
                 Entity owner = data.get("owner");
-                com.nhom67.platformfighter.entity.component.WeaponType weaponType = data.hasKey("weaponType") ? data.get("weaponType") : null;
+                com.nhom67.platformfighter.entity.component.WeaponType weaponType = data.hasKey("weaponType")
+                                ? data.get("weaponType")
+                                : null;
 
                 return entityBuilder(data)
                                 .type(EntityType.BULLET)
                                 .bbox(new HitBox(BoundingShape.box(bd.hitboxWidth(), bd.hitboxHeight())))
                                 .with(new CollidableComponent(true))
-                                .with(new com.nhom67.platformfighter.entity.component.BulletComponent(bd, owner, facingRight))
-                                .with(new com.nhom67.platformfighter.entity.component.BulletViewComponent(weaponType, bd, facingRight))
+                                .with(new com.nhom67.platformfighter.entity.component.BulletComponent(bd, owner,
+                                                facingRight))
+                                .with(new com.nhom67.platformfighter.entity.component.BulletViewComponent(weaponType,
+                                                bd, facingRight))
                                 .build();
         }
 

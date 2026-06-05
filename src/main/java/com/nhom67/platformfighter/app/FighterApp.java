@@ -36,7 +36,7 @@ public class FighterApp extends GameApplication {
         settings.setHeight(1080);
         settings.setTitle("67-Fighter");
         settings.setVersion("1.0");
-
+        settings.setAppIcon("ui/icon.png");
         // Bật Main Menu
         settings.setMainMenuEnabled(true);
         // Cài đặt Scene Factory tùy chỉnh của chúng ta
