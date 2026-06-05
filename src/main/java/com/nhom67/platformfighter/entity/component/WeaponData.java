@@ -29,4 +29,11 @@ public record WeaponData(
                 new BulletData(34, 2700, 8, 20, 700, 3.0),
                 5, 2, false, 0);
     }
+
+    public static WeaponData uzi() {
+        return new WeaponData(
+                WeaponType.UZI,
+                new BulletData(15, 900, 8, 12, 100, 3.0),
+                20, 0.1, false, 30);
+    }
 }

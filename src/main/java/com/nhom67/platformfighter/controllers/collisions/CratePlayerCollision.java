@@ -16,8 +16,13 @@ public class CratePlayerCollision implements CollisionHandlerInterface {
         onCollisionBegin(EntityType.CRATE, EntityType.PLAYER, (crate, player) -> {
             PlayerComponent playerComp = player.getComponent(PlayerComponent.class);
             if (playerComp != null) {
-                // Random vũ khí (trừ default Pistol ra)
-                WeaponData newWeapon = random.nextBoolean() ? WeaponData.shotgun() : WeaponData.rifle();
+
+                // Random loại vũ khí
+                WeaponData newWeapon = switch (random.nextInt(3)) {
+                    case 0 -> WeaponData.shotgun();
+                    case 1 -> WeaponData.rifle();
+                    default -> WeaponData.uzi();
+                };
                 playerComp.equipWeapon(newWeapon);
 
                 play("loot.wav");
