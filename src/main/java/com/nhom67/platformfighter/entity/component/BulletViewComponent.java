@@ -1,6 +1,7 @@
 package com.nhom67.platformfighter.entity.component;
 
 import com.almasb.fxgl.entity.component.Component;
+import javafx.geometry.Point2D;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
@@ -14,12 +15,12 @@ import javafx.util.Duration;
 public class BulletViewComponent extends Component {
     private final WeaponType weaponType;
     private final BulletData bd;
-    private final boolean facingRight;
+    private Point2D direction;
 
-    public BulletViewComponent(WeaponType weaponType, BulletData bd, boolean facingRight) {
+    public BulletViewComponent(WeaponType weaponType, BulletData bd, Point2D direction) {
         this.weaponType = weaponType;
         this.bd = bd;
-        this.facingRight = facingRight;
+        this.direction = direction;
     }
 
     @Override
@@ -44,19 +45,31 @@ public class BulletViewComponent extends Component {
 
             bulletView.setFitHeight(bd.hitboxHeight() * visualScale);
 
-            // Căn giữa chiều cao của ảnh đạn so với hitbox
-            bulletView.setTranslateY(-(bd.hitboxHeight() * visualScale - bd.hitboxHeight()) / 2);
+            bulletView.setTranslateY(
+                    -(bd.hitboxHeight() * visualScale
+                            - bd.hitboxHeight()) / 2
+            );
 
-            // Tính toán chiều dài thực tế của ảnh sau khi scale chiều cao
-            double actualW = img.getWidth() * ((bd.hitboxHeight() * visualScale) / img.getHeight());
+            double actualW =
+                    img.getWidth()
+                            * ((bd.hitboxHeight() * visualScale)
+                            / img.getHeight());
 
-            if (facingRight) {
-                // Đạn bay sang phải: phần đầu (bên phải ảnh) phải khớp với hitbox.
-                bulletView.setTranslateX(-(actualW - bd.hitboxWidth()));
-            } else {
-                // Đạn bay sang trái: ảnh lật ngược (ScaleX = -1).
-                bulletView.setScaleX(-1);
-            }
+            // Ảnh gốc được vẽ hướng sang phải
+            bulletView.setTranslateX(
+                    -(actualW - bd.hitboxWidth())
+            );
+
+            // Xoay theo hướng bay
+            double angle =
+                    Math.toDegrees(
+                            Math.atan2(
+                                    direction.getY(),
+                                    direction.getX()
+                            )
+                    );
+
+            bulletView.setRotate(angle);
 
             entity.getViewComponent().addChild(bulletView);
         } catch (Exception e) {

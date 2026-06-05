@@ -296,11 +296,13 @@ public class PlayerComponent extends Component {
                         break;
                 }
 
+
                 spawn("bullet",
                         new com.almasb.fxgl.entity.SpawnData(entity.getX() + 32 + (facingDirection * 18), bulletSpawnY)
                                 .put("bulletData", currentWeapon.bulletData())
                                 .put("facingRight", facingDirection == 1)
                                 .put("weaponType", currentWeapon.type())
+                                .put("spreadAngle", currentWeapon.spreadAngle())
                                 .put("owner", entity));
                 if (currentAmmo <= 0) {
                     handleEmptyAmmo();

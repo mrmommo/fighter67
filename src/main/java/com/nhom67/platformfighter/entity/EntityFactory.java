@@ -109,6 +109,24 @@ public class EntityFactory implements com.almasb.fxgl.entity.EntityFactory {
                 BulletData bd = data.get("bulletData");
                 boolean facingRight = data.get("facingRight");
                 Entity owner = data.get("owner");
+                double spreadAngle = data.get("spreadAngle");
+                Point2D direction;
+                double randomAngle =
+                        (Math.random() - 0.5) * spreadAngle;
+
+                double baseAngle =
+                        facingRight ? 0 : 180;
+
+                double finalAngle =
+                        baseAngle + randomAngle;
+
+                double rad =
+                        Math.toRadians(finalAngle);
+
+                direction = new Point2D(
+                        Math.cos(rad),
+                        Math.sin(rad)
+                );
                 com.nhom67.platformfighter.entity.component.WeaponType weaponType = data.hasKey("weaponType")
                                 ? data.get("weaponType")
                                 : null;
@@ -118,9 +136,9 @@ public class EntityFactory implements com.almasb.fxgl.entity.EntityFactory {
                                 .bbox(new HitBox(BoundingShape.box(bd.hitboxWidth(), bd.hitboxHeight())))
                                 .with(new CollidableComponent(true))
                                 .with(new com.nhom67.platformfighter.entity.component.BulletComponent(bd, owner,
-                                                facingRight))
+                                                facingRight, direction))
                                 .with(new com.nhom67.platformfighter.entity.component.BulletViewComponent(weaponType,
-                                                bd, facingRight))
+                                                bd, direction))
                                 .build();
         }
 
