@@ -4,36 +4,44 @@ public enum MapRegistry {
     MAP_1(
             "map1.tmx",
             "Battlefield",
-            "maps/map1background.png"),
+            4,
+            "menu_track_01.mp3"),
     MAP_2(
             "map2.tmx",
             "Loopdrop",
-            "maps/map2background.png"),
+            4,
+            "menu_track_02.mp3"),
     MAP_3(
             "map3.tmx",
             "Garden",
-            "maps/map3background.png"),
+            6,
+            "menu_track_03.mp3"),
     MAP_4(
             "map4.tmx",
             "Greenzone",
-            "maps/map4background.png"),
+            5,
+            "menu_track_05.mp3"), // Using track 05 for map 4 for now
     MAP_5(
             "map5.tmx",
             "Factory",
-            "maps/map5background.png"),
+            9,
+            "menu_track_05.mp3"),
     MAP_6(
             "map6.tmx", 
             "Cakecombat",
-            "maps/map6background.png");
+            4,
+            "menu_track_01.mp3"); // Using track 01 for map 6
             
     private final String tmxFile;
     private final String displayName;
-    private final String bgPath;
+    private final int layerCount;
+    private final String musicTrack;
 
-    MapRegistry(String tmxFile, String displayName, String bgPath) {
+    MapRegistry(String tmxFile, String displayName, int layerCount, String musicTrack) {
         this.tmxFile = tmxFile;
         this.displayName = displayName;
-        this.bgPath = bgPath;
+        this.layerCount = layerCount;
+        this.musicTrack = musicTrack;
     }
 
     public String getTmxFile() {
@@ -44,7 +52,15 @@ public enum MapRegistry {
         return displayName;
     }
 
-    public String getBgPath() {
-        return bgPath;
+    public int getLayerCount() {
+        return layerCount;
+    }
+
+    public String getMusicTrack() {
+        return musicTrack;
+    }
+
+    public String getPreviewImagePath() {
+        return "maps/map" + name().replace("MAP_", "") + "background.png";
     }
 }
