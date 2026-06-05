@@ -10,10 +10,19 @@ import javafx.scene.input.KeyCode;
 public class InputHandler {
     private Entity player1;
     private Entity player2;
+    private boolean player2BotControlled;
 
     public void setPlayers(Entity p1, Entity p2) {
         this.player1 = p1;
         this.player2 = p2;
+    }
+
+    public void setPlayer2BotControlled(boolean botControlled) {
+        this.player2BotControlled = botControlled;
+    }
+
+    private boolean canControlPlayer2() {
+        return player2 != null && !player2BotControlled;
     }
 
     public void initInput() {
@@ -77,37 +86,37 @@ public class InputHandler {
         getInput().addAction(new UserAction("Move Left 2") {
             @Override
             protected void onActionBegin() {
-                if (player2 != null) player2.getComponent(PlayerComponent.class).leftPress();
+                if (canControlPlayer2()) player2.getComponent(PlayerComponent.class).leftPress();
             }
             @Override
             protected void onAction() {
-                if (player2 != null) player2.getComponent(PlayerComponent.class).setMoveDirection(-1);
+                if (canControlPlayer2()) player2.getComponent(PlayerComponent.class).setMoveDirection(-1);
             }
             @Override
             protected void onActionEnd() {
-                if (player2 != null) player2.getComponent(PlayerComponent.class).stop();
+                if (canControlPlayer2()) player2.getComponent(PlayerComponent.class).stop();
             }
         }, KeyCode.LEFT);
 
         getInput().addAction(new UserAction("Move Right 2") {
             @Override
             protected void onActionBegin() {
-                if (player2 != null) player2.getComponent(PlayerComponent.class).rightPress();
+                if (canControlPlayer2()) player2.getComponent(PlayerComponent.class).rightPress();
             }
             @Override
             protected void onAction() {
-                if (player2 != null) player2.getComponent(PlayerComponent.class).setMoveDirection(1);
+                if (canControlPlayer2()) player2.getComponent(PlayerComponent.class).setMoveDirection(1);
             }
             @Override
             protected void onActionEnd() {
-                if (player2 != null) player2.getComponent(PlayerComponent.class).stop();
+                if (canControlPlayer2()) player2.getComponent(PlayerComponent.class).stop();
             }
         }, KeyCode.RIGHT);
 
         getInput().addAction(new UserAction("Jump 2") {
             @Override
             protected void onActionBegin() {
-                if (player2 != null) {
+                if (canControlPlayer2()) {
                     player2.getComponent(PlayerComponent.class).jump();
                 }
             }
@@ -116,7 +125,7 @@ public class InputHandler {
         getInput().addAction(new UserAction("Drop Down 2") {
             @Override
             protected void onActionBegin() {
-                if (player2 != null) {
+                if (canControlPlayer2()) {
                     player2.getComponent(PlayerComponent.class).dropDown();
                 }
             }
@@ -125,7 +134,7 @@ public class InputHandler {
         getInput().addAction(new UserAction("Shoot 2") {
             @Override
             protected void onActionBegin() {
-                if (player2 != null) {
+                if (canControlPlayer2()) {
                     player2.getComponent(PlayerComponent.class).shoot();
                 }
             }

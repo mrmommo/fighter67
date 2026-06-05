@@ -3,6 +3,7 @@ package com.nhom67.platformfighter.scene;
 import com.almasb.fxgl.input.UserAction;
 import com.almasb.fxgl.scene.SubScene;
 import com.nhom67.platformfighter.app.FighterApp;
+import com.nhom67.platformfighter.core.GameMode;
 import com.nhom67.platformfighter.map.MapRegistry;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
@@ -24,6 +25,9 @@ public class SelectScene extends SubScene {
     
     private ImageView mapPreview;
     private Text mapNameText;
+    private Text modeNameText;
+    private int currentModeIndex = 0;
+    private final GameMode[] modes = GameMode.values();
 
     public static SelectScene instance;
 
@@ -70,9 +74,18 @@ public class SelectScene extends SubScene {
         HBox carouselBox = new HBox(50, btnPrev, mapPreview, btnNext);
         carouselBox.setAlignment(Pos.CENTER);
 
+        modeNameText = new Text("");
+        modeNameText.setFont(javafx.scene.text.Font.font("Arial", javafx.scene.text.FontWeight.BOLD, 28));
+        modeNameText.setFill(Color.web("#feca57"));
+
+        javafx.scene.layout.StackPane btnModePrev = createSelectButton("◄", 80, () -> cycleMode(-1));
+        javafx.scene.layout.StackPane btnModeNext = createSelectButton("►", 80, () -> cycleMode(1));
+        HBox modeBox = new HBox(20, btnModePrev, modeNameText, btnModeNext);
+        modeBox.setAlignment(Pos.CENTER);
+
         javafx.scene.layout.StackPane btnGo = createSelectButton("🚀 START BATTLE", 300, () -> {
-            // Lưu map được chọn vào biến toàn cục
             FighterApp.selectedMap = maps[currentMapIndex];
+            FighterApp.gameMode = modes[currentModeIndex];
             // Đánh dấu để MenuScene không tự động phát nhạc trở lại
             MenuScene.isStartingGame = true;
             // Tắt nhạc nền menu
@@ -82,7 +95,11 @@ public class SelectScene extends SubScene {
             getGameController().startNewGame();
         });
 
-        VBox box = new VBox(30, mapNameText, carouselBox, btnGo);
+        Text modeTitle = new Text("CHẾ ĐỘ CHƠI");
+        modeTitle.setFont(javafx.scene.text.Font.font("Arial", javafx.scene.text.FontWeight.BOLD, 24));
+        modeTitle.setFill(Color.WHITE);
+
+        VBox box = new VBox(30, mapNameText, carouselBox, modeTitle, modeBox, btnGo);
         box.setAlignment(Pos.CENTER);
         box.setPrefSize(1920, 1080); // Đặt size bằng kích thước màn hình để căn giữa
         box.setTranslateX(250); // Dịch toàn bộ cụm chọn map sang bên phải 250px để chừa chỗ cho Menu chính
@@ -95,6 +112,8 @@ public class SelectScene extends SubScene {
         try {
             mapPreview.setImage(image(initialMap.getBgPath()));
         } catch (Exception ex) {}
+
+        updateModeLabel();
 
         // Đã gỡ Timeline tự động trong SelectScene để đồng bộ nhịp với MenuScene
 
@@ -114,6 +133,20 @@ public class SelectScene extends SubScene {
             currentMapIndex = index;
             updatePreview();
         }
+    }
+
+    private void cycleMode(int delta) {
+        currentModeIndex += delta;
+        if (currentModeIndex < 0) {
+            currentModeIndex = modes.length - 1;
+        } else if (currentModeIndex >= modes.length) {
+            currentModeIndex = 0;
+        }
+        updateModeLabel();
+    }
+
+    private void updateModeLabel() {
+        modeNameText.setText(modes[currentModeIndex].getDisplayName());
     }
 
     private void updatePreview() {

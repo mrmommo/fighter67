@@ -2,7 +2,8 @@ package com.nhom67.platformfighter.core;
 
 public enum WinnerInfo {
     PLAYER_1("PLAYER 1 WINS!"),
-    PLAYER_2("PLAYER 2 WINS!");
+    PLAYER_2("PLAYER 2 WINS!"),
+    BOT("BOT WINS!");
 
     private final String message;
 
