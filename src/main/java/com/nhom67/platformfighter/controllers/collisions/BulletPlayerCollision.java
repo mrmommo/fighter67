@@ -30,7 +30,7 @@ public class BulletPlayerCollision implements CollisionHandlerInterface {
 
                         // Nếu người chơi đang di chuyển (speedX > 5)
                         if (Math.abs(playerComp.getCurrentSpeedX()) > 5) {
-                            playerComp.applyStun(0.05); // Đứng yên trong 0.05s
+                            playerComp.applyStun(0); // Xoá stun để mượt hơn
                             playerComp.setCurrentSpeedX(0); // Mất quán tính hiện tại
 
                             // Đợi 0.05s (stun xong) rồi mới áp dụng 90% knockback

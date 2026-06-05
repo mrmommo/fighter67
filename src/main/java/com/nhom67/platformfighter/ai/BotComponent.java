@@ -25,7 +25,7 @@ public class BotComponent extends Component {
     private LocalTimer jumpCooldownTimer;
 
     // --- Constants (khoảng cách theo trục X) ---
-    private static final double MIN_COMBAT_DIST = 80;  // px – dưới mức này thì lui
+    private static final double MIN_COMBAT_DIST = 35;  // px – dưới mức này thì lui
     private static final double IDEAL_MAX_DIST  = 220;  // px – trên mức này thì tiến lại
     private static final double SHOOT_RANGE     = 10080;  // px – tầm tối đa để tiếp cận
     private static final double SHOOT_ALIGN_Y   = 70;   // px – chênh lệch Y tối đa (ngang hàng)
