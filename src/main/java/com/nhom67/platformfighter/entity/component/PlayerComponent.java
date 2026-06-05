@@ -294,6 +294,10 @@ public class PlayerComponent extends Component {
                         bulletSpawnY += 27;
                         play("AWM.wav");
                         break;
+                    case UZI:
+                        bulletSpawnY += 27;
+                        play("uzi.wav");
+                        break;
                     default:
                         bulletSpawnY += 27;
                         break;
