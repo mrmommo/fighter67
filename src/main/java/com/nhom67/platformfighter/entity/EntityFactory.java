@@ -44,7 +44,7 @@ public class EntityFactory implements com.almasb.fxgl.entity.EntityFactory {
                                 .build();
         }
 
-        @Spawns("oneWayPlatform") // Dùng cái này cho các bục nhảy trên không
+            @Spawns("oneWayPlatform") // Dùng cái này cho các bục nhảy trên không
         public Entity newOneWayPlatform(SpawnData data) {
                 PhysicsComponent physics = new PhysicsComponent();
                 physics.setBodyType(BodyType.STATIC);

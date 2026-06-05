@@ -5,8 +5,8 @@ public enum MapRegistry {
             "map1.tmx",
             "Battlefield",
             "maps/map1background.png"),
-    MAP_2(
-            "map2.tmx",
+    MAP_5(
+            "map5.tmx",
             "Loopdrop",
             "maps/map2background.png"),
     MAP_4(
