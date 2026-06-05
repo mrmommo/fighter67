@@ -7,5 +7,6 @@ public enum EntityType {
     BACKGROUND,
     ONE_WAY_PLATFORM,
     BULLET,
-    CRATE
+    CRATE,
+    BOT
 }

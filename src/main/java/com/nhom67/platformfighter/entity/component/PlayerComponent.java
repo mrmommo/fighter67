@@ -91,6 +91,13 @@ public class PlayerComponent extends Component {
         }
     }
 
+    /** Quay mặt không di chuyển (dùng cho bot giữ tầm bắn). */
+    public void face(int dir) {
+        if (dir != 0) {
+            this.facingDirection = dir;
+        }
+    }
+
     public void leftPress() {
         if (dashCooldownTimer.elapsed(javafx.util.Duration.seconds(0.5))) {
             if (!leftTapTimer.elapsed(javafx.util.Duration.seconds(0.25))) {
@@ -124,6 +131,14 @@ public class PlayerComponent extends Component {
             return;
         physics.setVelocityY(-600); // Lực nhảy
         jumps--;
+    }
+
+    public boolean canJump() {
+        return jumps > 0;
+    }
+
+    public int getRemainingJumps() {
+        return jumps;
     }
 
     public void dropDown() {
@@ -435,6 +450,10 @@ public class PlayerComponent extends Component {
 
     public void setCurrentLives(int currentLives) {
         this.currentLives = currentLives;
+    }
+
+    public boolean isHitStunned() {
+        return isHitStunned;
     }
 
     public boolean isDead() {

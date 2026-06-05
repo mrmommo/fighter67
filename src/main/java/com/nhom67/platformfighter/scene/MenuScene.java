@@ -382,10 +382,11 @@ public class MenuScene extends FXGLMenu {
 
         howToPlayBox.getChildren().addAll(
             title,
-            createKeyRow("W A S D", "Di chuyển & Nhảy"),
-            createKeyRow("J", "Đánh thường (Light Attack)"),
-            createKeyRow("K", "Đánh mạnh (Heavy Attack)"),
-            createKeyRow("L", "Lướt / Kỹ năng (Dash)"),
+            createKeyRow("W A S D", "P1: Di chuyển & Nhảy"),
+            createKeyRow("F", "P1: Bắn"),
+            createKeyRow("← → ↑ ↓", "P2: Di chuyển & Nhảy (chế độ 2 người)"),
+            createKeyRow("L", "P2: Bắn (chế độ 2 người)"),
+            createKeyRow("VS BOT", "Chọn trong màn chọn map trước khi vào trận"),
             createNatureButton("◄ BACK", () -> hideHowToPlayOverlay())
         );
     }

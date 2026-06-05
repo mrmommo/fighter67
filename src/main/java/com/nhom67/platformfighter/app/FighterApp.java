@@ -10,10 +10,10 @@ import javafx.scene.paint.Color;
 
 import static com.almasb.fxgl.dsl.FXGL.*;
 
-import java.lang.ModuleLayer.Controller;
-
 import com.nhom67.platformfighter.controllers.Controllers;
-import com.nhom67.platformfighter.core.CameraController;  // ✅ THÊM
+import com.nhom67.platformfighter.ai.BotComponent;
+import com.nhom67.platformfighter.core.CameraController;
+import com.nhom67.platformfighter.core.GameMode;
 import com.nhom67.platformfighter.entity.EntityFactory;
 import com.nhom67.platformfighter.map.MapLoader;
 import com.nhom67.platformfighter.map.MapRegistry;
@@ -49,7 +49,8 @@ public class FighterApp extends GameApplication {
         PlayerComponent p1Comp = player.getComponent(PlayerComponent.class);
         PlayerComponent p2Comp = player2.getComponent(PlayerComponent.class);
         
-        gameHUD.initHUD(p1Comp, p2Comp);
+        String p2Label = gameMode == GameMode.VS_BOT ? "BOT" : "P2";
+        gameHUD.initHUD(p1Comp, p2Comp, p2Label);
         roundManager = new RoundManager();
     }
     
@@ -71,8 +72,9 @@ public class FighterApp extends GameApplication {
         }
     }
 
-    // Map được chọn từ màn hình SelectScene
+    // Map và chế độ chơi được chọn từ SelectScene
     public static MapRegistry selectedMap = MapRegistry.MAP_1;
+    public static GameMode gameMode = GameMode.TWO_PLAYER;
 
     @Override
     protected void initGame() {
@@ -86,7 +88,14 @@ public class FighterApp extends GameApplication {
         player = spawn("player", new SpawnData(700, 300).put("color", Color.GREEN));
         player2 = spawn("player", new SpawnData(500, 300).put("color", Color.BLUE));
 
-        controller.setPlayers(player, player2);
+        boolean vsBot = gameMode == GameMode.VS_BOT;
+        if (vsBot) {
+            BotComponent bot = new BotComponent();
+            player2.addComponent(bot);
+            bot.setTarget(player);
+        }
+
+        controller.setPlayers(player, player2, vsBot);
 
         set("player", player);
         set("player2", player2);

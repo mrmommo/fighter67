@@ -22,14 +22,14 @@ public class GameHUD {
     private StackPane p2AmmoHUD;
     private Text p2AmmoText;
 
-    public void initHUD(PlayerComponent p1, PlayerComponent p2) {
+    public void initHUD(PlayerComponent p1, PlayerComponent p2, String p2Label) {
         // Player 1 HUD (Top Left)
         p1HealthBar = new HealthBarWidget(p1, true, "P1");
         p1HealthBar.setTranslateX(20);
         p1HealthBar.setTranslateY(20);
         
         // Player 2 HUD (Top Right)
-        p2HealthBar = new HealthBarWidget(p2, false, "P2");
+        p2HealthBar = new HealthBarWidget(p2, false, p2Label);
         p2HealthBar.setTranslateX(getAppWidth() - 220); // 200 width + 20 margin
         p2HealthBar.setTranslateY(20);
 
