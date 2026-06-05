@@ -28,9 +28,10 @@ public class Controllers {
         getPhysicsWorld().setGravity(0, 1500);
     }
 
-    public void setPlayers(Entity p1, Entity p2) {
+    public void setPlayers(Entity p1, Entity p2, boolean player2IsBot) {
         this.player1 = p1;
         this.player2 = p2;
         inputHandler.setPlayers(p1, p2);
+        inputHandler.setPlayer2BotControlled(player2IsBot);
     }
 }

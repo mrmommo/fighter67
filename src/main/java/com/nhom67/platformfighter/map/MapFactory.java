@@ -5,18 +5,27 @@ import static com.almasb.fxgl.dsl.FXGL.*;
 
 public class MapFactory {
 
-    public static void generateKillZones(double mapWidth, double mapHeight) {
-        // BOTTOM kill zone (dưới đáy map, thêm buffer 50px)
-        spawn("KillZone", new SpawnData(0, mapHeight + 50)
-                .put("width", mapWidth)
-                .put("height", 100.0));
-        // LEFT kill zone (bên trái, cao hơn map)
-        spawn("KillZone", new SpawnData(-150, -500)
-                .put("width", 100.0)
-                .put("height", mapHeight + 1500));
-        // RIGHT kill zone (bên phải, cao hơn map)
-        spawn("KillZone", new SpawnData(mapWidth + 50, -500)
-                .put("width", 100.0)
-                .put("height", mapHeight + 1500));
-    }
+        private static final double KZ = 1; // độ dày kill zone (buffer ra ngoài)
+
+        public static void generateKillZones(double mapWidth, double mapHeight) {
+                // LEFT — hoàn toàn ngoài map, mép trong (right edge) khít x=0
+                spawn("KillZone", new SpawnData(-KZ, -KZ)
+                                .put("width", KZ)
+                                .put("height", mapHeight + KZ * 2));
+
+                // RIGHT — hoàn toàn ngoài map, mép trong (left edge) khít x=mapWidth
+                spawn("KillZone", new SpawnData(mapWidth, -KZ)
+                                .put("width", KZ)
+                                .put("height", mapHeight + KZ * 2));
+
+                // TOP — hoàn toàn ngoài map, mép trong (bottom edge) khít y=0
+                spawn("KillZone", new SpawnData(0, -KZ)
+                                .put("width", mapWidth)
+                                .put("height", KZ));
+
+                // BOTTOM — hoàn toàn ngoài map, mép trong (top edge) khít y=mapHeight
+                spawn("KillZone", new SpawnData(0, mapHeight)
+                                .put("width", mapWidth)
+                                .put("height", KZ));
+        }
 }
