@@ -2,6 +2,7 @@ package com.nhom67.platformfighter.entity.component;
 
 import com.almasb.fxgl.entity.Entity;
 import com.almasb.fxgl.entity.component.Component;
+import javafx.geometry.Point2D;
 
 public class BulletComponent extends Component {
     
@@ -10,11 +11,13 @@ public class BulletComponent extends Component {
     private boolean facingRight;
     private double distanceTravelled = 0;
     private double timeAlive = 0;
+    private Point2D direction;
 
-    public BulletComponent(BulletData data, Entity owner, boolean facingRight) {
+    public BulletComponent(BulletData data, Entity owner, boolean facingRight, Point2D direction) {
         this.data = data;
         this.owner = owner;
         this.facingRight = facingRight;
+        this.direction = direction;
     }
 
     @Override
@@ -26,11 +29,10 @@ public class BulletComponent extends Component {
         }
 
         double moveDist = data.speed() * tpf;
-        if (facingRight) {
-            entity.translateX(moveDist);
-        } else {
-            entity.translateX(-moveDist);
-        }
+        entity.translate(
+                direction.getX() * moveDist,
+                direction.getY() * moveDist
+        );
         
         distanceTravelled += moveDist;
         // Xóa đạn nếu bay quá xa (tránh lag)
