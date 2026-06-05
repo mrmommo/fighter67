@@ -12,21 +12,21 @@ public record WeaponData(
     public static WeaponData pistol() {
         return new WeaponData(
                 WeaponType.PISTOL,
-                new BulletData(10, 600, 8, 8, 150, 3.0),
-                12, 0.3, true, 30);
+                new BulletData(10, 600, 8, 8, 150, 1.25),
+                12, 0.2, true, 10);
     }
 
     public static WeaponData shotgun() {
         return new WeaponData(
                 WeaponType.SHOTGUN,
-                new BulletData(25, 400, 50, 50, 1500, 0.12), // shotgun biến mất sau 0.1s
-                6, 0.8, false, 1);
+                new BulletData(40, 400, 50, 50, 1500, 0.12), // shotgun biến mất sau 0.1s
+                7, 0.8, false, 1);
     }
 
     public static WeaponData rifle() {
         return new WeaponData(
                 WeaponType.RIFLE,
-                new BulletData(15, 900, 8, 12, 100, 3.0),
-                20, 0.1, false, 30);
+                new BulletData(34, 2700, 8, 20, 700, 3.0),
+                5, 2, false, 0);
     }
 }
