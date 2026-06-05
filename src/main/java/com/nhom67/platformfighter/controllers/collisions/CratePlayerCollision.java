@@ -20,6 +20,16 @@ public class CratePlayerCollision implements CollisionHandlerInterface {
                 WeaponData newWeapon = random.nextBoolean() ? WeaponData.shotgun() : WeaponData.rifle();
                 playerComp.equipWeapon(newWeapon);
 
+                // Lấy tên súng từ WeaponType để hiển thị
+                String weaponName = newWeapon.type().name().charAt(0)
+                        + newWeapon.type().name().substring(1).toLowerCase();
+
+                // Hiển thị tên súng nổi lên tại vị trí giữa crate
+                double crateX = crate.getX() + crate.getWidth() / 2 - 15;
+                double crateY = crate.getY();
+                com.nhom67.platformfighter.entity.component.CrateComponent.spawnPickupEffect(
+                        crateX, crateY, weaponName);
+
                 // Xóa Crate sau khi ăn
                 crate.removeFromWorld();
             }
