@@ -284,18 +284,20 @@ public class PlayerComponent extends Component {
                 switch (currentWeapon.type()) {
                     case PISTOL:
                         bulletSpawnY += 27;
+                        play("pistol.wav");
                         break;
                     case SHOTGUN:
                         bulletSpawnY += 15;
+                        play("shotgun.wav");
                         break;
                     case RIFLE:
                         bulletSpawnY += 27;
+                        play("AWM.wav");
                         break;
                     default:
                         bulletSpawnY += 27;
                         break;
                 }
-
 
                 spawn("bullet",
                         new com.almasb.fxgl.entity.SpawnData(entity.getX() + 32 + (facingDirection * 18), bulletSpawnY)
@@ -384,7 +386,7 @@ public class PlayerComponent extends Component {
         isHitStunned = false; // Xóa trạng thái stun nếu còn dư
         moveDirection = 0;
         equipWeapon(WeaponData.pistol()); // Reset vũ khí về mặc định
-        
+
         // Gọi jump nhẹ để player rơi xuống tự nhiên (tránh bị lơ lửng)
         physics.setVelocityY(50);
     }

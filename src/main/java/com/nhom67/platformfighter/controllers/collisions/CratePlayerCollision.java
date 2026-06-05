@@ -20,6 +20,8 @@ public class CratePlayerCollision implements CollisionHandlerInterface {
                 WeaponData newWeapon = random.nextBoolean() ? WeaponData.shotgun() : WeaponData.rifle();
                 playerComp.equipWeapon(newWeapon);
 
+                play("loot.wav");
+
                 // Lấy tên súng từ WeaponType để hiển thị
                 String weaponName = newWeapon.type().name().charAt(0)
                         + newWeapon.type().name().substring(1).toLowerCase();
