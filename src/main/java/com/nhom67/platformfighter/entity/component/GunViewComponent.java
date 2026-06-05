@@ -94,7 +94,7 @@ public class GunViewComponent extends Component {
                         break;
                     default:
                         gunImageView.setFitWidth(40);
-                        gunImageView.setTranslateY(10);
+                        gunImageView.setTranslateY(20);
                         break;
                 }
 
@@ -112,6 +112,8 @@ public class GunViewComponent extends Component {
                 return "/assets/guns/shotgun.png";
             case RIFLE:
                 return "/assets/guns/rifle.png";
+            case UZI:
+                return "/assets/guns/uzi.png";
             default:
                 return "/assets/guns/piston.png";
         }

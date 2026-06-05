@@ -4,6 +4,7 @@ public enum WeaponType {
     PISTOL,      // default
     SHOTGUN,
     RIFLE,
+    UZI,
     ROCKET_LAUNCHER,
     LASER
 }
