@@ -16,6 +16,7 @@ import com.nhom67.platformfighter.entity.component.PlayerComponent;
 import com.nhom67.platformfighter.entity.component.AnimationComponent;
 import com.nhom67.platformfighter.entity.component.GunViewComponent;
 import javafx.geometry.Point2D;
+import com.almasb.fxgl.texture.Texture;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 
@@ -129,13 +130,15 @@ public class EntityFactory implements com.almasb.fxgl.entity.EntityFactory {
                 fd.getFilter().maskBits = CATEGORY_GROUND | CATEGORY_ONE_WAY | CATEGORY_PLAYER;
                 physics.setFixtureDef(fd);
 
+                Texture crateTexture = texture("crate.png", 60, 30);
+
                 return entityBuilder(data)
                                 .type(EntityType.CRATE)
-                                .bbox(new HitBox(BoundingShape.box(30, 30)))
+                                .bbox(new HitBox(BoundingShape.box(60, 30)))
                                 .with(physics)
                                 .with(new CollidableComponent(true))
                                 .with(new com.nhom67.platformfighter.entity.component.CrateComponent())
-                                .view(new Rectangle(30, 30, Color.BROWN))
+                                .view(crateTexture)
                                 .build();
         }
 }
