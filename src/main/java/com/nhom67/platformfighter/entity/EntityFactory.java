@@ -101,8 +101,6 @@ public class EntityFactory implements com.almasb.fxgl.entity.EntityFactory {
                                 .with(new CollidableComponent(true)) // Sử dụng CollidableComponent thay cho
                                                                      // PhysicsComponent để không
                                                                      // lỗi Sensor handler
-                                .view(new Rectangle(((Number) data.get("width")).doubleValue(),
-                                                ((Number) data.get("height")).doubleValue(), Color.RED))
                                 .build();
         }
 
