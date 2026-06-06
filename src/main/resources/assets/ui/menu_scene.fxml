@@ -56,33 +56,49 @@
         <!-- howToPlayBox -->
         <VBox fx:id="howToPlayBox" alignment="CENTER_LEFT" spacing="20" visible="false" opacity="0" maxWidth="800">
             <Text text="HOW TO PLAY" styleClass="subtitle-text" />
+
+            <Text text="P1" styleClass="subtitle-text" />
             <HBox alignment="CENTER_LEFT" spacing="10">
                 <Text text="A / D" styleClass="how-to-key"/>
                 <Text text=" - Di chuyển trái / phải" styleClass="how-to-desc"/>
             </HBox>
             <HBox alignment="CENTER_LEFT" spacing="10">
+                <Text text="AA / DD" styleClass="how-to-key"/>
+                <Text text=" - Dash trái / phải" styleClass="how-to-desc"/>
+            </HBox>            
+            <HBox alignment="CENTER_LEFT" spacing="10">
                 <Text text="W" styleClass="how-to-key"/>
                 <Text text=" - Nhảy (Nhấn 2 lần để nhảy kép)" styleClass="how-to-desc"/>
             </HBox>
             <HBox alignment="CENTER_LEFT" spacing="10">
-                <Text text="J" styleClass="how-to-key"/>
-                <Text text=" - Tấn công nhẹ" styleClass="how-to-desc"/>
+                <Text text="S" styleClass="how-to-key"/>
+                <Text text=" - Xuống" styleClass="how-to-desc"/>
             </HBox>
             <HBox alignment="CENTER_LEFT" spacing="10">
-                <Text text="K" styleClass="how-to-key"/>
-                <Text text=" - Tấn công mạnh" styleClass="how-to-desc"/>
+                <Text text="F" styleClass="how-to-key"/>
+                <Text text=" - Tấn công" styleClass="how-to-desc"/>
+            </HBox>
+
+            <Text text="P2" styleClass="subtitle-text" />
+            <HBox alignment="CENTER_LEFT" spacing="10">
+                <Text text="← / →" styleClass="how-to-key"/>
+                <Text text=" - Di chuyển trái / phải" styleClass="how-to-desc"/>
             </HBox>
             <HBox alignment="CENTER_LEFT" spacing="10">
-                <Text text="SPACE" styleClass="how-to-key"/>
-                <Text text=" - Lướt (Dash)" styleClass="how-to-desc"/>
+                <Text text="←← / →→" styleClass="how-to-key"/>
+                <Text text=" - Dash trái / phải" styleClass="how-to-desc"/>
+            </HBox>
+            <HBox alignment="CENTER_LEFT" spacing="10">
+                <Text text="↑" styleClass="how-to-key"/>
+                <Text text=" - Nhảy (Nhấn 2 lần để nhảy kép)" styleClass="how-to-desc"/>
+            </HBox>
+            <HBox alignment="CENTER_LEFT" spacing="10">
+                <Text text="↓" styleClass="how-to-key"/>
+                <Text text=" - Xuống" styleClass="how-to-desc"/>
             </HBox>
             <HBox alignment="CENTER_LEFT" spacing="10">
                 <Text text="L" styleClass="how-to-key"/>
-                <Text text=" - Phóng đạn" styleClass="how-to-desc"/>
-            </HBox>
-            <HBox alignment="CENTER_LEFT" spacing="10">
-                <Text text="S" styleClass="how-to-key"/>
-                <Text text=" - Phòng thủ (Block)" styleClass="how-to-desc"/>
+                <Text text=" - Tấn công" styleClass="how-to-desc"/>
             </HBox>
         </VBox>
     </StackPane>
