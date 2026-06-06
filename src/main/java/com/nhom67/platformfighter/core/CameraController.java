@@ -18,13 +18,14 @@ public class CameraController {
     // Camera zoom
     private double currentZoom;
 
-    // Smooth follow parameters
-    private final double cameraSmoothSpeed = 0.08; // Position smoothing
-    private final double zoomSmoothSpeed = 0.05; // Zoom smoothing
+    // Smooth follow parameters (Tốc độ mượt, số càng lớn càng nhanh)
+    private final double posSmoothSpeed = 8.0; 
+    private final double zoomOutSpeed = 12.0; // Phóng to góc nhìn (zoom out) nhanh để không mất nhân vật khỏi màn hình
+    private final double zoomInSpeed = 4.0;   // Thu hẹp góc nhìn (zoom in) chậm rãi để tránh chóng mặt
 
     // Tăng giới hạn zoom để cho phép phóng to khi gần và thu nhỏ khi xa
-    private final double zoomMin = 1; // Zoom out khi xa nhau
-    private final double zoomMax = 2.0; // Zoom in khi lại gần
+    private final double zoomMin = 1.0; // Zoom out khi xa nhau
+    private final double zoomMax = 1.3; // Zoom in khi lại gần
 
     // Padding around players when calculating zoom
     private final double cameraPadX = 350;
@@ -69,6 +70,9 @@ public class CameraController {
         double midX = (p1CenterX + p2CenterX) / 2;
         double midY = (p1CenterY + p2CenterY) / 2;
 
+        // Thêm một chút trọng số dời camera xuống dưới để nhìn thấy mặt đất rõ hơn khi nhảy cao
+        midY += 50; 
+
         // 2. Calculate span (distance between players + padding)
         double spanX = Math.abs(p1CenterX - p2CenterX) + cameraPadX * 2;
         double spanY = Math.abs(p1CenterY - p2CenterY) + cameraPadY * 2;
@@ -77,12 +81,16 @@ public class CameraController {
         double targetZoom = Math.max(zoomMin, Math.min(zoomMax,
                 Math.min(screenWidth / spanX, screenHeight / spanY)));
 
-        // 4. Smooth camera position movement
-        this.currentCameraX += (midX - currentCameraX) * cameraSmoothSpeed;
-        this.currentCameraY += (midY - currentCameraY) * cameraSmoothSpeed;
+        // 4. Smooth camera position movement (Framerate Independent Lerp)
+        double posLerp = 1.0 - Math.exp(-posSmoothSpeed * tpf);
+        this.currentCameraX += (midX - currentCameraX) * posLerp;
+        this.currentCameraY += (midY - currentCameraY) * posLerp;
 
-        // 5. Smooth zoom animation
-        this.currentZoom += (targetZoom - currentZoom) * zoomSmoothSpeed;
+        // 5. Smooth zoom animation (Asymmetric Lerp: Fast Out, Slow In)
+        // Lưu ý: targetZoom nhỏ hơn currentZoom nghĩa là góc nhìn rộng ra (Zoom Out)
+        double zoomSpeed = (targetZoom < currentZoom) ? zoomOutSpeed : zoomInSpeed;
+        double zoomLerp = 1.0 - Math.exp(-zoomSpeed * tpf);
+        this.currentZoom += (targetZoom - currentZoom) * zoomLerp;
 
         // 6. Clamp camera to stay within map bounds
         clampCamera();

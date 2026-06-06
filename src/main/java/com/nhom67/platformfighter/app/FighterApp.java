@@ -4,8 +4,6 @@ import com.almasb.fxgl.app.GameApplication;
 import com.almasb.fxgl.app.GameSettings;
 import com.almasb.fxgl.entity.Entity;
 import com.almasb.fxgl.entity.SpawnData;
-import com.nhom67.platformfighter.scene.GameOverScene;
-import javafx.scene.control.Button;
 import javafx.scene.paint.Color;
 
 import static com.almasb.fxgl.dsl.FXGL.*;
@@ -28,7 +26,7 @@ public class FighterApp extends GameApplication {
     Controllers controller = new Controllers();
     private GameHUD gameHUD;
     private RoundManager roundManager;
-    private CameraController cameraController;  // ✅ THÊM
+    private CameraController cameraController; // ✅ THÊM
 
     @Override
     protected void initSettings(GameSettings settings) {
@@ -48,12 +46,12 @@ public class FighterApp extends GameApplication {
         gameHUD = new GameHUD();
         PlayerComponent p1Comp = player.getComponent(PlayerComponent.class);
         PlayerComponent p2Comp = player2.getComponent(PlayerComponent.class);
-        
+
         String p2Label = gameMode == GameMode.VS_BOT ? "BOT" : "P2";
         gameHUD.initHUD(p1Comp, p2Comp, p2Label);
         roundManager = new RoundManager();
     }
-    
+
     @Override
     public void onUpdate(double tpf) {
         if (gameHUD != null) {
@@ -65,7 +63,7 @@ public class FighterApp extends GameApplication {
             roundManager.checkWinCondition(p1Comp, p2Comp);
             roundManager.onUpdate(tpf);
         }
-        
+
         // ✅ THÊM: Update camera smooth follow
         if (cameraController != null) {
             cameraController.update(tpf);
@@ -78,12 +76,20 @@ public class FighterApp extends GameApplication {
 
     @Override
     protected void initGame() {
+        // Dừng các nhạc cũ (nhạc menu)
+        com.nhom67.platformfighter.util.SoundManager.stopMusic();
+
         // Đăng ký EntityFactory
         getGameWorld().addEntityFactory(new EntityFactory());
-        
-        // ✅ THAY: Load map và lấy dimensions
+
+        // Load map và lấy dimensions
         MapLoader.MapDimensions mapDims = MapLoader.loadMap(selectedMap);
-        
+
+        // Phát nhạc cho Map
+        if (selectedMap.getMusicTrack() != null && !selectedMap.getMusicTrack().isEmpty()) {
+            com.nhom67.platformfighter.util.SoundManager.playMusic(selectedMap.getMusicTrack());
+        }
+
         //
         player = spawn("player", new SpawnData(700, 300).put("color", Color.GREEN));
         player2 = spawn("player", new SpawnData(500, 300).put("color", Color.BLUE));
@@ -99,7 +105,7 @@ public class FighterApp extends GameApplication {
 
         set("player", player);
         set("player2", player2);
-        
+
         // ✅ THÊM: Khởi tạo camera controller với map dimensions thật
         cameraController = new CameraController(player, player2, mapDims.width, mapDims.height);
     }

@@ -48,6 +48,18 @@ public class SoundManager {
         }
     }
 
+    // Phát nhạc một lần duy nhất (không lặp)
+    public static void playMusicOnce(String fileName) {
+        stopMusic();
+        try {
+            currentMusic = getAssetLoader().loadMusic(fileName);
+            currentMusicName = fileName;
+            getAudioPlayer().playMusic(currentMusic);
+        } catch (Exception e) {
+            System.err.println("SoundManager: Không tìm thấy nhạc: " + fileName);
+        }
+    }
+
     public static void stopMusic() {
         if (currentMusic != null) {
             try {
