@@ -1,5 +1,6 @@
 package com.nhom67.platformfighter.entity.component;
 
+import com.almasb.fxgl.dsl.FXGL;
 import com.almasb.fxgl.entity.component.Component;
 import javafx.geometry.Point2D;
 import javafx.scene.image.Image;
@@ -84,7 +85,7 @@ public class BulletViewComponent extends Component {
         hitText.setStroke(Color.ORANGE);
         hitText.setStrokeWidth(1.5);
 
-        var viewport = com.almasb.fxgl.dsl.FXGL.getGameScene().getViewport();
+        var viewport = FXGL.getGameScene().getViewport();
 
         // ✅ Tính screen coords, có xét đến zoom của viewport
         double zoom = viewport.getZoom();
@@ -95,7 +96,7 @@ public class BulletViewComponent extends Component {
         hitText.setTranslateX(screenX - 16); // ~half width của "HIT" ở 18pt
         hitText.setTranslateY(screenY);
 
-        com.almasb.fxgl.dsl.FXGL.getGameScene().addUINode(hitText);
+        FXGL.getGameScene().addUINode(hitText);
 
         TranslateTransition moveUp = new TranslateTransition(Duration.seconds(0.5), hitText);
         moveUp.setByY(-40);
@@ -103,7 +104,7 @@ public class BulletViewComponent extends Component {
         FadeTransition fadeOut = new FadeTransition(Duration.seconds(0.5), hitText);
         fadeOut.setFromValue(1.0);
         fadeOut.setToValue(0.0);
-        fadeOut.setOnFinished(e -> com.almasb.fxgl.dsl.FXGL.getGameScene().removeUINode(hitText));
+        fadeOut.setOnFinished(e -> FXGL.getGameScene().removeUINode(hitText));
 
         moveUp.play();
         fadeOut.play();

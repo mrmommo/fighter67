@@ -4,6 +4,7 @@ import com.almasb.fxgl.app.GameApplication;
 import com.almasb.fxgl.app.GameSettings;
 import com.almasb.fxgl.entity.Entity;
 import com.almasb.fxgl.entity.SpawnData;
+import com.nhom67.platformfighter.util.SoundManager;
 import javafx.scene.paint.Color;
 
 import static com.almasb.fxgl.dsl.FXGL.*;
@@ -18,7 +19,6 @@ import com.nhom67.platformfighter.map.MapRegistry;
 import com.nhom67.platformfighter.scene.ui.GameHUD;
 import com.nhom67.platformfighter.core.RoundManager;
 import com.nhom67.platformfighter.entity.component.PlayerComponent;
-import com.nhom67.platformfighter.core.WinnerInfo;
 
 public class FighterApp extends GameApplication {
     private Entity player;
@@ -77,7 +77,7 @@ public class FighterApp extends GameApplication {
     @Override
     protected void initGame() {
         // Dừng các nhạc cũ (nhạc menu)
-        com.nhom67.platformfighter.util.SoundManager.stopMusic();
+        SoundManager.stopMusic();
 
         // Đăng ký EntityFactory
         getGameWorld().addEntityFactory(new EntityFactory());
@@ -87,7 +87,7 @@ public class FighterApp extends GameApplication {
 
         // Phát nhạc cho Map
         if (selectedMap.getMusicTrack() != null && !selectedMap.getMusicTrack().isEmpty()) {
-            com.nhom67.platformfighter.util.SoundManager.playMusic(selectedMap.getMusicTrack());
+            SoundManager.playMusic(selectedMap.getMusicTrack());
         }
 
         //

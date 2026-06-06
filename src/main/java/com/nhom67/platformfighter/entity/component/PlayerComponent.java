@@ -20,7 +20,7 @@ public class PlayerComponent extends Component {
     private int jumps = 2;
 
     private double currentSpeedX = 0;
-    private double maxSpeed = 350;
+    private double maxSpeed = 300;
     private double acceleration = 2500;
     private double friction = 2000;
     private int moveDirection = 0; // -1 left, 1 right, 0 stop
@@ -33,7 +33,7 @@ public class PlayerComponent extends Component {
     private LocalTimer dashCooldownTimer;
     private LocalTimer dropTimer;
 
-    private double dashSpeed = 800;
+    private double dashSpeed = 600;
 
     public boolean isDropping = false;
     private boolean isDashing = false;
@@ -129,7 +129,7 @@ public class PlayerComponent extends Component {
     public void jump() {
         if (jumps == 0)
             return;
-        physics.setVelocityY(-600); // Lực nhảy
+        physics.setVelocityY(-500); // Lực nhảy
         jumps--;
     }
 
@@ -167,7 +167,7 @@ public class PlayerComponent extends Component {
         // 1. Quản lý trạng thái tụt xuống qua sàn mềm
         if (isDropping) {
 
-            if (dropTimer.elapsed(Duration.seconds(0.3))) { // FIX #5: CHANGE: 0.25 -> 0.3
+            if (dropTimer.elapsed(Duration.seconds(0.2))) { // FIX #5: CHANGE: 0.25 -> 0.3
                 isDropping = false; // FIX #5
             }
         }
