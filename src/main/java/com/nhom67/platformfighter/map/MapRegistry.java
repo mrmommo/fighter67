@@ -24,8 +24,12 @@ public enum MapRegistry {
     MAP_6(
             "map6.tmx", 
             "Cakecombat",
-            "maps/map6background.png");
-            
+            "maps/map6background.png"),
+    MAP_7(
+            "map7.tmx",
+            "Volcano",
+            "maps/map7background.png");
+
     private final String tmxFile;
     private final String displayName;
     private final String bgPath;
