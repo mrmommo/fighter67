@@ -6,7 +6,7 @@
 
 <StackPane prefWidth="1920" prefHeight="1080" stylesheets="@styles.css" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml">
     
-    <Rectangle width="1920" height="1080" fill="rgba(13, 38, 13, 0.85)"/>
+    <Rectangle fx:id="overlayBg" width="1920" height="1080" fill="rgba(13, 38, 13, 0.85)"/>
     
     <VBox alignment="CENTER" spacing="30">
         <Text fx:id="titleText" text="BATTLE CONCLUDED" styleClass="gameover-title" />

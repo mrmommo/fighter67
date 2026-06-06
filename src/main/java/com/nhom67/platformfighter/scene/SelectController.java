@@ -4,6 +4,7 @@ import javafx.fxml.FXML;
 import javafx.scene.text.Text;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.StackPane;
+import javafx.scene.shape.Polygon;
 import javafx.animation.ScaleTransition;
 import javafx.animation.FadeTransition;
 import javafx.util.Duration;
@@ -14,6 +15,8 @@ import com.nhom67.platformfighter.core.GameMode;
 import com.nhom67.platformfighter.map.MapRegistry;
 import com.nhom67.platformfighter.util.SoundManager;
 import static com.almasb.fxgl.dsl.FXGL.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class SelectController {
 
@@ -33,6 +36,10 @@ public class SelectController {
     private final GameMode[] modes = GameMode.values();
 
     private SelectScene scene;
+
+    // Lưu shadow và accent polygon để có thể đổi màu theo map
+    private final List<DropShadow> buttonShadows = new ArrayList<>();
+    private final List<Polygon> accentPolygons = new ArrayList<>();
 
     public SelectController(SelectScene scene) {
         this.scene = scene;
@@ -88,17 +95,25 @@ public class SelectController {
             getGameController().startNewGame();
         });
 
-        // Initialize display
+        // Khởi tạo hiển thị và áp dụng theme của map đầu tiên
         MapRegistry initialMap = maps[currentMapIndex];
         mapNameText.setText(initialMap.getDisplayName());
         try {
             mapPreview.setImage(image(initialMap.getPreviewImagePath()));
         } catch (Exception ex) {}
         updateModeLabel();
+        applyMapTheme(initialMap.getAccentColor());
     }
 
     private void setupButtonHover(StackPane btn) {
         DropShadow shadow = new DropShadow(15, Color.web("#a8e6cf", 0.8));
+        buttonShadows.add(shadow);
+
+        // Lưu polygon accent (child index 1) để đổi fill theo theme
+        if (btn.getChildren().size() > 1 && btn.getChildren().get(1) instanceof Polygon) {
+            accentPolygons.add((Polygon) btn.getChildren().get(1));
+        }
+
         ScaleTransition hoverScale = new ScaleTransition(Duration.seconds(0.15), btn);
         
         btn.setOnMouseEntered(e -> {
@@ -114,6 +129,46 @@ public class SelectController {
             hoverScale.setToY(1.0);
             hoverScale.play();
         });
+    }
+
+    /**
+     * Đổi màu accent của tất cả button và tiêu đề map theo theme map hiện tại.
+     */
+    public void applyMapTheme(String accentHex) {
+        Color accent = Color.web(accentHex);
+        Color accentGlow = Color.web(accentHex, 0.8);
+
+        // Đổi màu tên map (mapNameText)
+        mapNameText.setStyle("-fx-fill: " + toRgbaString(accentHex, 1.0) + ";"
+                + "-fx-effect: dropshadow(three-pass-box, black, 10, 0, 0, 0);");
+
+        // Cập nhật shadow hover
+        for (DropShadow shadow : buttonShadows) {
+            shadow.setColor(accentGlow);
+        }
+
+        // Cập nhật màu accent polygon
+        for (Polygon polygon : accentPolygons) {
+            polygon.setFill(accent);
+        }
+
+        // Cập nhật stroke của background polygon (child index 0)
+        List<StackPane> buttons = List.of(btnPrev, btnNext, btnModePrev, btnModeNext, btnGo);
+        for (StackPane btn : buttons) {
+            if (btn.getChildren().get(0) instanceof Polygon bgPoly) {
+                bgPoly.setStyle("-fx-stroke: " + toRgbaString(accentHex, 0.7) + ";");
+            }
+        }
+    }
+
+    /** Chuyển hex + alpha thành chuỗi rgba() hợp lệ cho JavaFX inline style */
+    private String toRgbaString(String hex, double alpha) {
+        Color c = Color.web(hex);
+        return String.format("rgba(%d,%d,%d,%.2f)",
+                (int)(c.getRed()   * 255),
+                (int)(c.getGreen() * 255),
+                (int)(c.getBlue()  * 255),
+                alpha);
     }
 
     public void syncWithMenu(int index) {
@@ -137,6 +192,7 @@ public class SelectController {
     private void updatePreview() {
         MapRegistry currentMap = maps[currentMapIndex];
         mapNameText.setText(currentMap.getDisplayName());
+        applyMapTheme(currentMap.getAccentColor());
         
         FadeTransition fadeOut = new FadeTransition(Duration.seconds(0.3), mapPreview);
         fadeOut.setToValue(0.3);
