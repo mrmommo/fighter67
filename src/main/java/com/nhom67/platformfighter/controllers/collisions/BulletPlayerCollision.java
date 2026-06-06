@@ -1,8 +1,10 @@
 package com.nhom67.platformfighter.controllers.collisions;
 
+import com.almasb.fxgl.dsl.FXGL;
 import com.almasb.fxgl.entity.Entity;
 import com.nhom67.platformfighter.entity.EntityType;
 import com.nhom67.platformfighter.entity.component.BulletComponent;
+import com.nhom67.platformfighter.entity.component.BulletViewComponent;
 import com.nhom67.platformfighter.entity.component.PlayerComponent;
 import static com.almasb.fxgl.dsl.FXGL.*;
 
@@ -34,7 +36,7 @@ public class BulletPlayerCollision implements CollisionHandlerInterface {
                             playerComp.setCurrentSpeedX(0); // Mất quán tính hiện tại
 
                             // Đợi 0.05s (stun xong) rồi mới áp dụng 90% knockback
-                            com.almasb.fxgl.dsl.FXGL.getGameTimer().runOnceAfter(() -> {
+                            FXGL.getGameTimer().runOnceAfter(() -> {
                                 if (player.isActive() && !playerComp.isDead()) {
                                     playerComp.applyKnockback(dirForce * 0.9);
                                 }
@@ -46,7 +48,7 @@ public class BulletPlayerCollision implements CollisionHandlerInterface {
                     }
 
                     // Hiển thị chữ "HIT" tại vị trí va chạm
-                    com.nhom67.platformfighter.entity.component.BulletViewComponent.spawnHitEffect(
+                    BulletViewComponent.spawnHitEffect(
                             bullet.getX(), bullet.getY()
                     );
 

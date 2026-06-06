@@ -1,11 +1,13 @@
 package com.nhom67.platformfighter.core;
 
+import com.almasb.fxgl.entity.SpawnData;
 import com.almasb.fxgl.scene.Scene;
 import com.almasb.fxgl.scene.SubScene;
 import com.nhom67.platformfighter.app.FighterApp;
 import com.nhom67.platformfighter.entity.component.PlayerComponent;
 import com.nhom67.platformfighter.scene.GameOverScene;
 import static com.almasb.fxgl.dsl.FXGL.*;
+import com.almasb.fxgl.core.math.FXGLMath;
 import java.util.Random;
 
 public class RoundManager {
@@ -33,15 +35,16 @@ public class RoundManager {
         if (isGameOver) return;
 
         crateSpawnTimer += tpf;
-        if (crateSpawnTimer > 10.0) { // Spawn crate every 10 seconds
+        if (crateSpawnTimer > 10) { // Spawn crate every 10 seconds
             crateSpawnTimer = 0;
             spawnCrate();
         }
     }
 
     private void spawnCrate() {
-        double spawnX = 100 + random.nextDouble() * (getAppWidth() - 200);
-        spawn("crate", new com.almasb.fxgl.entity.SpawnData(spawnX, -50)); // Rơi từ trên trời
+        double spawnX = FXGLMath.random(400, 1520);
+        double spawnY = FXGLMath.random(0, 700);
+        spawn("crate", new SpawnData(spawnX, spawnY)); // Rơi từ trên trời
     }
 
     private void showGameOver(WinnerInfo winner) {
