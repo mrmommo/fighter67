@@ -1,7 +1,7 @@
 /* ==== GLOBAL FONTS AND TITLES ==== */
 
 .title-text {
-    -fx-font-family: "Georgia";
+    -fx-font-family: "Arial";
     -fx-font-weight: bold;
     -fx-font-size: 90px;
     -fx-fill: #a8e6cf;
@@ -9,7 +9,7 @@
 }
 
 .subtitle-text {
-    -fx-font-family: "Georgia";
+    -fx-font-family: "Arial";
     -fx-font-weight: bold;
     -fx-font-size: 40px;
     -fx-fill: #a8e6cf;
@@ -25,7 +25,7 @@
 /* ==== HOW TO PLAY ==== */
 
 .how-to-key {
-    -fx-font-family: "Courier New";
+    -fx-font-family: "Arial";
     -fx-font-weight: bold;
     -fx-font-size: 26px;
     -fx-fill: #feca57;
@@ -77,9 +77,11 @@
     -fx-stroke: rgba(168, 230, 207, 0.8);
     -fx-stroke-width: 1;
 }
+
 .forest-btn:hover .forest-btn-bg-solid {
     -fx-fill: rgba(0, 0, 0, 0.38);
 }
+
 .forest-btn:pressed .forest-btn-bg-solid {
     -fx-fill: rgba(0, 0, 0, 0.55);
 }
@@ -87,7 +89,7 @@
 /* ==== SELECT SCENE ==== */
 
 .select-map-name {
-    -fx-font-family: "Georgia";
+    -fx-font-family: "Arial";
     -fx-font-weight: bold;
     -fx-font-size: 55px;
     -fx-fill: #a8e6cf;
@@ -111,7 +113,7 @@
 /* ==== GAME OVER SCENE ==== */
 
 .gameover-title {
-    -fx-font-family: "Georgia";
+    -fx-font-family: "Arial";
     -fx-font-weight: bold;
     -fx-font-size: 80px;
     -fx-fill: #a8e6cf;

@@ -41,8 +41,8 @@ public class PlayerComponent extends Component {
     // --- HEALTH & LIVES ---
     private int maxHealth = 100;
     private int currentHealth = 100;
-    private int maxLives = 3;
-    private int currentLives = 3;
+    private int maxLives = 5;
+    private int currentLives = maxLives;
     private boolean isDead = false;
 
     private boolean isHitStunned = false;
