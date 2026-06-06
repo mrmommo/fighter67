@@ -20,7 +20,7 @@ public enum MapRegistry {
             "map4.tmx",
             "Greenzone",
             5,
-            "menu_track_05.mp3"), // Using track 05 for map 4 for now
+            "menu_track_04.mp3"), 
     MAP_5(
             "map5.tmx",
             "Factory",
