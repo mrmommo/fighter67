@@ -80,7 +80,7 @@ public class MenuScene extends FXGLMenu {
         startFireflyEffect();
 
         // 3. Tự động trượt nền (Auto Slide)
-        autoSlide = new Timeline(new KeyFrame(Duration.seconds(7), e -> {
+        autoSlide = new Timeline(new KeyFrame(Duration.seconds(3), e -> {
             if (!isAnimating) {
                 slideBackground(1);
             }
@@ -238,8 +238,7 @@ public class MenuScene extends FXGLMenu {
 
             // Đổi màu button theo accent color của map mới
             if (controller != null) {
-                com.nhom67.platformfighter.map.MapRegistry[] maps =
-                        com.nhom67.platformfighter.map.MapRegistry.values();
+                com.nhom67.platformfighter.map.MapRegistry[] maps = com.nhom67.platformfighter.map.MapRegistry.values();
                 controller.applyMapTheme(maps[currentBgIndex].getAccentColor());
             }
         });
