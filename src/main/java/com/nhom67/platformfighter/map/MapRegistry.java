@@ -27,16 +27,16 @@ public enum MapRegistry {
             9,
             "menu_track_05.mp3"),
     MAP_6(
-            "map6.tmx", 
+            "map6.tmx",
             "Cakecombat",
             4,
             "menu_track_01.mp3"), // Using track 01 for map 6
     MAP_7(
-            "map7.tmx", 
+            "map7.tmx",
             "Volcano",
             4,
             "menu_track_01.mp3");
-            
+
     private final String tmxFile;
     private final String displayName;
     private final int layerCount;
