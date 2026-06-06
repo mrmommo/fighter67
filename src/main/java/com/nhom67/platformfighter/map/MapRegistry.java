@@ -1,26 +1,26 @@
 package com.nhom67.platformfighter.map;
 
 public enum MapRegistry {
-    MAP_1(
+     MAP_1(
             "map1.tmx",
             "Battlefield",
             4,
             "menu_track_01.mp3"),
-    MAP_2(
+  /*   MAP_2(
             "map2.tmx",
             "Loopdrop",
             4,
-            "menu_track_02.mp3"),
+            "menu_track_02.mp3"),  */
     MAP_3(
             "map3.tmx",
-            "Garden",
+            "City of Lights",
             6,
             "menu_track_03.mp3"),
     MAP_4(
             "map4.tmx",
             "Greenzone",
             5,
-            "menu_track_05.mp3"), // Using track 05 for map 4 for now
+            "menu_track_04.mp3"), 
     MAP_5(
             "map5.tmx",
             "Factory",
@@ -28,14 +28,14 @@ public enum MapRegistry {
             "menu_track_05.mp3"),
     MAP_6(
             "map6.tmx", 
-            "Cakecombat",
+            "Sweetday",
             4,
-            "menu_track_01.mp3"), // Using track 01 for map 6
+            "menu_track_06.mp3"),
     MAP_7(
             "map7.tmx", 
-            "Volcano",
+            "Volcano Valley",
             4,
-            "menu_track_01.mp3");
+            "menu_track_07.mp3");
             
     private final String tmxFile;
     private final String displayName;
