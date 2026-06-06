@@ -1,6 +1,6 @@
 package com.nhom67.platformfighter.scene.ui;
 
-import com.almasb.fxgl.app.GameApplication;
+import com.nhom67.platformfighter.app.FighterApp;
 import com.nhom67.platformfighter.entity.component.PlayerComponent;
 import static com.almasb.fxgl.dsl.FXGL.*;
 import javafx.scene.layout.StackPane;
@@ -17,20 +17,24 @@ public class GameHUD {
     private PlayerComponent p1;
     private PlayerComponent p2;
 
+    // Floating ammo HUD trên đầu nhân vật (giữ nguyên)
     private StackPane p1AmmoHUD;
     private Text p1AmmoText;
     private StackPane p2AmmoHUD;
     private Text p2AmmoText;
 
     public void initHUD(PlayerComponent p1, PlayerComponent p2, String p2Label) {
+        // Lấy accent color từ map đang chọn
+        String accent = FighterApp.selectedMap.getAccentColor();
+
         // Player 1 HUD (Top Left)
-        p1HealthBar = new HealthBarWidget(p1, true, "P1");
+        p1HealthBar = new HealthBarWidget(p1, true, "P1", accent);
         p1HealthBar.setTranslateX(20);
         p1HealthBar.setTranslateY(20);
-        
-        // Player 2 HUD (Top Right)
-        p2HealthBar = new HealthBarWidget(p2, false, p2Label);
-        p2HealthBar.setTranslateX(getAppWidth() - 220); // 200 width + 20 margin
+
+        // Player 2 HUD (Top Right) — panel rộng 360px + 20px margin
+        p2HealthBar = new HealthBarWidget(p2, false, p2Label, accent);
+        p2HealthBar.setTranslateX(getAppWidth() - 520);
         p2HealthBar.setTranslateY(20);
 
         addUINode(p1HealthBar);
@@ -39,7 +43,7 @@ public class GameHUD {
         this.p1 = p1;
         this.p2 = p2;
 
-        // Player 1 Ammo HUD (World-space)
+        // Player 1 Ammo HUD (World-space, trên đầu nhân vật)
         p1AmmoText = new Text();
         p1AmmoText.setFont(Font.font("Arial", FontWeight.BOLD, 12));
         p1AmmoText.setFill(Color.BLACK);
@@ -51,7 +55,7 @@ public class GameHUD {
         p1AmmoHUD.setTranslateY(-20);
         p1.getEntity().getViewComponent().addChild(p1AmmoHUD);
 
-        // Player 2 Ammo HUD (World-space)
+        // Player 2 Ammo HUD (World-space, trên đầu nhân vật)
         p2AmmoText = new Text();
         p2AmmoText.setFont(Font.font("Arial", FontWeight.BOLD, 12));
         p2AmmoText.setFill(Color.BLACK);
@@ -65,13 +69,15 @@ public class GameHUD {
     }
 
     public void onUpdate(double tpf) {
-        if (p1HealthBar != null) p1HealthBar.update(tpf);
-        if (p2HealthBar != null) p2HealthBar.update(tpf);
+        if (p1HealthBar != null)
+            p1HealthBar.update(tpf);
+        if (p2HealthBar != null)
+            p2HealthBar.update(tpf);
 
+        // Cập nhật floating ammo HUD
         if (p1 != null && p1AmmoHUD != null) {
             p1AmmoText.setText(p1.isReloading() ? "0" : String.valueOf(p1.getCurrentAmmo()));
         }
-
         if (p2 != null && p2AmmoHUD != null) {
             p2AmmoText.setText(p2.isReloading() ? "0" : String.valueOf(p2.getCurrentAmmo()));
         }

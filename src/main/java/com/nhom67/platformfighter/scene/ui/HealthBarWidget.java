@@ -1,104 +1,290 @@
 package com.nhom67.platformfighter.scene.ui;
 
 import com.nhom67.platformfighter.entity.component.PlayerComponent;
+import com.nhom67.platformfighter.entity.component.WeaponType;
+import javafx.scene.effect.Blend;
+import javafx.scene.effect.BlendMode;
+import javafx.scene.effect.ColorInput;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
+import javafx.scene.paint.CycleMethod;
+import javafx.scene.paint.LinearGradient;
+import javafx.scene.paint.Stop;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * HUD widget cho mỗi player: thanh máu (accent color → đỏ khi < 30%),
+ * icon mạng (heart.png tô màu accent, đen khi mất mạng),
+ * vũ khí hiện tại (ảnh gun + tên).
+ */
 public class HealthBarWidget extends Pane {
 
-    private PlayerComponent player;
-    private boolean isLeftAligned;
-    
-    private double barWidth = 200;
-    private double barHeight = 20;
-    
-    private Rectangle healthBarBg;
-    private Rectangle healthBarFg;
-    private Text nameText;
-    private Text livesText;
-    
-    private double displayHealth;
+    // ── Layout constants ──────────────────────────────────────────────
+    private static final double PW = 500; // panel width
+    private static final double PH = 120; // panel height
+    private static final double PAD = 16; // padding
+    private static final double BW = 356; // health bar width
+    private static final double BH = 24; // health bar height
+    private static final double R1Y = 18; // row-1 top Y
+    private static final double R2Y = 68; // row-2 top Y
+    private static final double HS = 32; // heart icon size
+    private static final double HG = 5; // heart gap
+    private static final double GH = 38; // gun icon height
 
-    public HealthBarWidget(PlayerComponent player, boolean isLeftAligned, String playerName) {
+    // ── Fields ───────────────────────────────────────────────────────
+    private final PlayerComponent player;
+    private final boolean left; // true = P1 (left-aligned), false = P2 (mirrored)
+    private final Color accent;
+
+    private Rectangle hfg; // health foreground bar
+    private Text hpTxt;
+    private Text weaponTxt;
+    private Text ammoTxt;
+    private ImageView weaponIV;
+    private final List<ImageView> heartIVs = new ArrayList<>();
+
+    private double displayHp;
+    private double bx; // barX position inside panel
+    private WeaponType lastWT;
+
+    // ─────────────────────────────────────────────────────────────────
+    public HealthBarWidget(PlayerComponent player, boolean left,
+            String label, String accentHex) {
         this.player = player;
-        this.isLeftAligned = isLeftAligned;
-        this.displayHealth = player.getCurrentHealth();
-
-        // Background
-        healthBarBg = new Rectangle(barWidth, barHeight, Color.DARKGRAY);
-        healthBarBg.setStroke(Color.BLACK);
-        healthBarBg.setStrokeWidth(2);
-
-        // Foreground (Health)
-        healthBarFg = new Rectangle(barWidth, barHeight, Color.web("#E74C3C"));
-
-        // Name text
-        nameText = new Text(playerName);
-        nameText.setFont(Font.font("Arial", FontWeight.BOLD, 18));
-        nameText.setFill(Color.WHITE);
-
-        // Lives text
-        livesText = new Text("Lives: " + player.getCurrentLives());
-        livesText.setFont(Font.font("Arial", FontWeight.BOLD, 14));
-        livesText.setFill(Color.WHITE);
-
-        // Layout alignment
-        if (isLeftAligned) {
-            nameText.setX(0);
-            nameText.setY(-5);
-            
-            healthBarBg.setX(0);
-            healthBarBg.setY(0);
-            
-            healthBarFg.setX(0);
-            healthBarFg.setY(0);
-            
-            livesText.setX(0);
-            livesText.setY(barHeight + 15);
-        } else {
-            // Right aligned
-            nameText.setX(barWidth - nameText.getLayoutBounds().getWidth());
-            nameText.setY(-5);
-            
-            healthBarBg.setX(0);
-            healthBarBg.setY(0);
-            
-            healthBarFg.setX(0); // Will adjust width from right to left in update
-            healthBarFg.setY(0);
-            
-            livesText.setX(barWidth - livesText.getLayoutBounds().getWidth());
-            livesText.setY(barHeight + 15);
-        }
-
-        getChildren().addAll(healthBarBg, healthBarFg, nameText, livesText);
+        this.left = left;
+        this.accent = Color.web(accentHex);
+        this.displayHp = player.getCurrentHealth();
+        build(label);
     }
 
-    public void update(double tpf) {
-        // Lerp display health
-        double targetHealth = player.getCurrentHealth();
-        displayHealth += (targetHealth - displayHealth) * 10 * tpf; // lerp with speed factor
+    // ── Build UI ─────────────────────────────────────────────────────
+    private void build(String label) {
+        // Glass background panel
+        Rectangle bg = new Rectangle(PW, PH);
+        bg.setFill(Color.rgb(0, 0, 0, 0.10));
+        bg.setStroke(accent.deriveColor(0, 1, 1, 0.65));
+        bg.setStrokeWidth(1.5);
+        bg.setArcWidth(12);
+        bg.setArcHeight(12);
 
-        if (Math.abs(targetHealth - displayHealth) < 0.5) {
-            displayHealth = targetHealth;
+        // Thin accent glow strip at top
+        Rectangle glow = new Rectangle(PW - 8, 3);
+        glow.setX(4);
+        glow.setY(0);
+        glow.setFill(accent);
+        glow.setArcWidth(12);
+        glow.setArcHeight(12);
+        glow.setOpacity(0.88);
+
+        getChildren().addAll(bg, glow);
+        buildHealthRow(label);
+        buildHearts();
+        buildWeapon();
+    }
+
+    /** Row 1: [Name] [===bar===] [HP#] — mirrored for P2 */
+    private void buildHealthRow(String label) {
+        // Bar X: leave room for name/hp text on respective sides
+        bx = left ? (PAD + 34) : (PAD + 40);
+
+        // Bar background
+        Rectangle hbg = new Rectangle(BW, BH);
+        hbg.setX(bx);
+        hbg.setY(R1Y);
+        hbg.setFill(Color.rgb(0, 0, 0, 0.15));
+        hbg.setArcWidth(6);
+        hbg.setArcHeight(6);
+        hbg.setStroke(Color.rgb(255, 255, 255, 0.08));
+        hbg.setStrokeWidth(1);
+
+        // Bar foreground (health)
+        hfg = new Rectangle(BW, BH);
+        hfg.setX(bx);
+        hfg.setY(R1Y);
+        hfg.setArcWidth(6);
+        hfg.setArcHeight(6);
+        hfg.setFill(accentGrad());
+
+        // Player label
+        Text lbl = new Text(label);
+        lbl.setFont(Font.font("Arial", FontWeight.BOLD, 18));
+        lbl.setFill(accent);
+        lbl.setX(left ? PAD : (bx + BW + 6));
+        lbl.setY(R1Y + BH - 2);
+
+        // HP number
+        hpTxt = new Text(player.getCurrentHealth() + "HP");
+        hpTxt.setFont(Font.font("Arial", FontWeight.BOLD, 16));
+        hpTxt.setFill(Color.WHITE);
+        hpTxt.setX(left ? (bx + BW + 6) : PAD);
+        hpTxt.setY(R1Y + BH - 2);
+
+        getChildren().addAll(hbg, hfg, lbl, hpTxt);
+    }
+
+    /** Row 2: life icons (heart.png tinted) */
+    private void buildHearts() {
+        Image img = null;
+        try {
+            img = new Image(getClass().getResourceAsStream("/assets/textures/ui/heart.png"));
+        } catch (Exception ignored) {
         }
 
-        double widthRatio = Math.max(0, displayHealth / player.getMaxHealth());
-        double currentWidth = barWidth * widthRatio;
+        int max = player.getMaxLives();
+        double block = max * (HS + HG) - HG; // total hearts-row width
 
-        if (isLeftAligned) {
-            healthBarFg.setWidth(currentWidth);
+        for (int i = 0; i < max; i++) {
+            ImageView iv = new ImageView(img);
+            iv.setFitWidth(HS);
+            iv.setFitHeight(HS);
+            iv.setPreserveRatio(true);
+            iv.setSmooth(true);
+
+            // P1: hearts start from left. P2: hearts anchor to right.
+            double ix = left
+                    ? PAD + i * (HS + HG)
+                    : (PW - PAD - block + i * (HS + HG));
+
+            iv.setLayoutX(ix);
+            iv.setLayoutY(R2Y + 1);
+            tintHeart(iv, true);
+            heartIVs.add(iv);
+            getChildren().add(iv);
+        }
+    }
+
+    /** Row 2: gun icon + weapon name + ammo */
+    private void buildWeapon() {
+        int max = player.getMaxLives();
+        double block = max * (HS + HG) - HG;
+
+        // P1: weapon to the RIGHT of hearts. P2: weapon to the LEFT of hearts.
+        double gx, tx;
+        if (left) {
+            gx = PAD + block + 10;
+            tx = gx + 42;
         } else {
-            healthBarFg.setWidth(currentWidth);
-            healthBarFg.setX(barWidth - currentWidth);
+            tx = PAD;
+            gx = tx + 70;
         }
 
-        livesText.setText("Lives: " + player.getCurrentLives());
-        if (!isLeftAligned) {
-            livesText.setX(barWidth - livesText.getLayoutBounds().getWidth());
+        weaponIV = new ImageView();
+        weaponIV.setFitHeight(GH);
+        weaponIV.setPreserveRatio(true);
+        weaponIV.setSmooth(true);
+        weaponIV.setLayoutX(gx);
+        weaponIV.setLayoutY(R2Y - 1);
+
+        weaponTxt = new Text("PISTOL");
+        weaponTxt.setFont(Font.font("Arial", FontWeight.BOLD, 15));
+        weaponTxt.setFill(accent);
+        weaponTxt.setX(tx);
+        weaponTxt.setY(R2Y + 18);
+
+        ammoTxt = new Text("7/7");
+        ammoTxt.setFont(Font.font("Arial", FontWeight.BOLD, 14));
+        ammoTxt.setFill(Color.rgb(210, 225, 235));
+        ammoTxt.setX(tx);
+        ammoTxt.setY(R2Y + 36);
+
+        getChildren().addAll(weaponIV, weaponTxt, ammoTxt);
+        refreshWeapon();
+    }
+
+    // ── Per-frame update ─────────────────────────────────────────────
+    public void update(double tpf) {
+        // Lerp health display
+        double target = player.getCurrentHealth();
+        displayHp += (target - displayHp) * 10 * tpf;
+        if (Math.abs(target - displayHp) < 0.5)
+            displayHp = target;
+
+        double ratio = Math.max(0, displayHp / player.getMaxHealth());
+        double w = BW * ratio;
+        boolean crit = ratio < 0.30;
+
+        // Health bar
+        hfg.setFill(crit ? redGrad() : accentGrad());
+        hfg.setWidth(w);
+        hfg.setX(left ? bx : bx + BW - w); // P1 fills L→R, P2 fills R→L
+
+        hpTxt.setText((int) Math.ceil(displayHp) + "HP");
+
+        // Life icons: alive = accent tint, dead = dark
+        int lives = player.getCurrentLives();
+        for (int i = 0; i < heartIVs.size(); i++) {
+            tintHeart(heartIVs.get(i), i < lives);
         }
+
+        // Weapon icon + name (only refreshes when weapon changes)
+        refreshWeapon();
+
+        // Ammo count
+        String a = player.isReloading()
+                ? "RELOAD"
+                : player.getCurrentAmmo() + "/" + player.getCurrentWeapon().maxAmmo();
+        ammoTxt.setText(a);
+        ammoTxt.setFill(player.isReloading()
+                ? Color.web("#ff7675")
+                : Color.rgb(210, 225, 235));
+    }
+
+    // ── Helpers ──────────────────────────────────────────────────────
+
+    /** Tô màu heart icon: accent (alive) hoặc đen mờ (mất mạng). */
+    private void tintHeart(ImageView iv, boolean alive) {
+        Color c = alive ? accent : Color.rgb(20, 20, 20);
+        ColorInput ci = new ColorInput(0, 0, HS + 4, HS + 4, c);
+        Blend b = new Blend(BlendMode.SRC_ATOP);
+        b.setTopInput(ci);
+        iv.setEffect(b);
+        iv.setOpacity(alive ? 1.0 : 0.38);
+    }
+
+    /** Cập nhật ảnh vũ khí khi weapon type thay đổi. */
+    private void refreshWeapon() {
+        WeaponType wt = player.getCurrentWeapon().type();
+        if (wt == lastWT)
+            return;
+        lastWT = wt;
+        try {
+            weaponIV.setImage(new Image(
+                    getClass().getResourceAsStream("/assets/guns/" + gunFile(wt))));
+        } catch (Exception ignored) {
+        }
+        weaponTxt.setText(wt.name());
+    }
+
+    private String gunFile(WeaponType t) {
+        return switch (t) {
+            case PISTOL -> "piston.png";
+            case SHOTGUN -> "shotgun.png";
+            case RIFLE -> "rifle.png";
+            case UZI -> "uzi.png";
+            case AK -> "AK-47.png";
+            default -> "piston.png";
+        };
+    }
+
+    /** Gradient theo màu accent của map. */
+    private LinearGradient accentGrad() {
+        return new LinearGradient(0, 0, 1, 0, true, CycleMethod.NO_CYCLE,
+                new Stop(0, accent.brighter()),
+                new Stop(1, accent));
+    }
+
+    /** Gradient đỏ cảnh báo (HP < 30%). */
+    private LinearGradient redGrad() {
+        return new LinearGradient(0, 0, 1, 0, true, CycleMethod.NO_CYCLE,
+                new Stop(0, Color.web("#ff6b6b")),
+                new Stop(1, Color.web("#c0392b")));
     }
 }
