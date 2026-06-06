@@ -79,7 +79,7 @@ public class BulletViewComponent extends Component {
 
     public static void spawnHitEffect(double worldX, double worldY) {
         Text hitText = new Text("HIT");
-        hitText.setFont(Font.font("Arial", FontWeight.EXTRA_BOLD, 18));
+        hitText.setFont(Font.font("Arial", FontWeight.EXTRA_BOLD, 30));
         hitText.setFill(Color.YELLOW);
         hitText.setStroke(Color.ORANGE);
         hitText.setStrokeWidth(1.5);

@@ -9,7 +9,7 @@ public class MapFactory {
 
         public static void generateKillZones(double mapWidth, double mapHeight) {
                 // BOTTOM — hoàn toàn ngoài map, mép trong (top edge) khít y=mapHeight
-                spawn("KillZone", new SpawnData(-(mapWidth * 5), mapHeight)
+                spawn("KillZone", new SpawnData(-(mapWidth * 5), mapHeight + 1000)
                                 .put("width", mapWidth * 10)
                                 .put("height", KZ));
         }

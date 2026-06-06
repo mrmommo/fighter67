@@ -42,7 +42,7 @@ public class CrateComponent extends Component {
 
     public static void spawnPickupEffect(double worldX, double worldY, String weaponName) {
         Text pickupText = new Text("⚔ " + weaponName + "!");
-        pickupText.setFont(Font.font("Arial", FontWeight.EXTRA_BOLD, 20));
+        pickupText.setFont(Font.font("Arial", FontWeight.EXTRA_BOLD, 30));
         pickupText.setFill(Color.CYAN);
         pickupText.setStroke(Color.DARKBLUE);
         pickupText.setStrokeWidth(1.5);
