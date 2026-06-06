@@ -1,37 +1,37 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <map version="1.10" tiledversion="1.12.2" orientation="orthogonal" renderorder="right-down" width="60" height="34" tilewidth="32" tileheight="32" infinite="0" nextlayerid="7" nextobjectid="67">
  <tileset firstgid="1" name="spritesheet80" tilewidth="32" tileheight="32" tilecount="81" columns="9">
-  <image source="../../../../../../../../../Downloads/spritesheet80.png" width="288" height="288"/>
+  <image source="spritesheet80.png" width="288" height="288"/>
  </tileset>
  <tileset firstgid="82" name="Ladder1" tilewidth="32" tileheight="32" tilecount="1" columns="1">
-  <image source="../../../../../../../../map6/industrial neon/3 Objects/Ladder1.png" width="32" height="32"/>
+  <image source="Ladder1.png" width="32" height="32"/>
  </tileset>
  <tileset firstgid="83" name="Ladder2" tilewidth="32" tileheight="32" tilecount="1" columns="1">
-  <image source="../../../../../../../../map6/industrial neon/3 Objects/Ladder2.png" width="32" height="32"/>
+  <image source="Ladder2.png" width="32" height="32"/>
  </tileset>
  <tileset firstgid="84" name="Fence1" tilewidth="32" tileheight="32" tilecount="1" columns="1">
-  <image source="../../../../../../../../map6/industrial neon/3 Objects/Fence1.png" width="32" height="32"/>
+  <image source="Fence1.png" width="32" height="32"/>
  </tileset>
  <tileset firstgid="85" name="Fence2" tilewidth="32" tileheight="32" tilecount="1" columns="1">
-  <image source="../../../../../../../../map6/industrial neon/3 Objects/Fence2.png" width="32" height="32"/>
+  <image source="Fence2.png" width="32" height="32"/>
  </tileset>
  <tileset firstgid="86" name="Fence3" tilewidth="32" tileheight="32" tilecount="1" columns="1">
-  <image source="../../../../../../../../map6/industrial neon/3 Objects/Fence3.png" width="32" height="32"/>
+  <image source="Fence3.png" width="32" height="32"/>
  </tileset>
  <tileset firstgid="87" name="Box1" tilewidth="32" tileheight="32" tilecount="1" columns="1">
-  <image source="../../../../../../../../map6/industrial neon/3 Objects/Box1.png" width="32" height="32"/>
+  <image source="Box1.png" width="32" height="32"/>
  </tileset>
  <tileset firstgid="88" name="Box2" tilewidth="32" tileheight="32" tilecount="1" columns="1">
-  <image source="../../../../../../../../map6/industrial neon/3 Objects/Box2.png" width="32" height="32"/>
+  <image source="Box2.png" width="32" height="32"/>
  </tileset>
  <tileset firstgid="89" name="Box3" tilewidth="32" tileheight="32" tilecount="1" columns="1">
-  <image source="../../../../../../../../map6/industrial neon/3 Objects/Box3.png" width="32" height="32"/>
+  <image source="Box3.png" width="32" height="32"/>
  </tileset>
  <tileset firstgid="90" name="Ladder3" tilewidth="32" tileheight="32" tilecount="1" columns="1">
-  <image source="../../../../../../../../map6/industrial neon/3 Objects/Ladder3.png" width="32" height="32"/>
+  <image source="Ladder3.png" width="32" height="32"/>
  </tileset>
  <tileset firstgid="91" name="Hammer" tilewidth="32" tileheight="32" tilecount="16" columns="8">
-  <image source="../../../../../../../../map6/industrial neon/4 Animated objects/Hammer.png" width="256" height="64"/>
+  <image source="Hammer.png" width="256" height="64"/>
  </tileset>
  <layer id="1" name="Tile Layer 1" width="60" height="34">
   <data encoding="csv">
@@ -59,9 +59,9 @@
 0,0,0,0,0,0,0,0,0,0,74,74,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,14,23,32,0,0,0,0,0,0,0,0,0,0,19,20,0,0,0,68,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,6,15,24,38,38,38,38,38,38,38,38,0,0,0,0,0,0,0,62,0,68,0,0,19,20,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,4,72,72,13,25,22,0,0,0,0,0,0,4,13,13,13,22,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,62,0,62,0,0,0,0,0,0,0,0,0,0,0,
-0,0,0,0,0,0,0,0,6,15,15,15,15,24,79,79,79,79,79,79,6,15,15,15,24,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,
-0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,12,12,12,12,0,0,0,0,0,0,0,12,12,12,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,12,0,12,12,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,6,15,15,15,15,24,79,79,79,79,79,79,6,15,15,15,24,0,0,0,0,0,0,0,0,0,0,0,0,12,12,12,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,68,68,68,0,0,0,0,12,0,12,12,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,12,12,12,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,4,13,13,13,25,25,25,25,25,13,13,13,25,25,25,13,13,22,0,0,0,0,0,4,13,13,25,25,25,25,13,13,25,25,25,25,25,13,13,13,25,25,25,25,25,25,13,22,0,0,0,0,0,0,
 0,0,0,0,0,0,14,23,23,23,23,23,23,23,23,23,23,23,23,23,23,23,23,32,0,0,0,0,0,14,23,23,29,29,29,29,29,23,23,29,29,29,29,29,29,23,23,23,23,23,29,29,29,32,0,0,0,0,0,0,
 0,0,0,0,0,0,6,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,24,0,0,0,0,0,6,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,24,0,0,0,0,0,0,
@@ -113,12 +113,10 @@
   <object id="35" type="oneWayPlatform" x="673.333" y="321.333" width="669.333" height="8"/>
   <object id="36" type="oneWayPlatform" x="481.333" y="478.667" width="509.333" height="12"/>
   <object id="37" type="oneWayPlatform" x="989.333" y="545.333" width="128" height="10.6667"/>
-  <object id="38" type="oneWayPlatform" x="984" y="494.667" width="8" height="46.6667"/>
   <object id="39" type="oneWayPlatform" x="1281.33" y="418.667" width="92" height="8"/>
   <object id="40" type="oneWayPlatform" x="1408" y="448" width="96" height="6.66667"/>
   <object id="41" type="oneWayPlatform" x="1537.33" y="481.333" width="92" height="9.33333"/>
   <object id="42" type="oneWayPlatform" x="1217.33" y="512" width="320" height="9.33333"/>
-  <object id="43" type="oneWayPlatform" x="1537.33" y="493.333" width="5.33333" height="17.3333"/>
   <object id="44" type="oneWayPlatform" x="417.333" y="608" width="60" height="8"/>
   <object id="45" type="oneWayPlatform" x="737.333" y="577.333" width="93.3333" height="9.33333"/>
   <object id="46" type="oneWayPlatform" x="608" y="642.667" width="60" height="8"/>
@@ -127,19 +125,16 @@
   <object id="49" type="oneWayPlatform" x="254.667" y="736" width="190.667" height="8"/>
   <object id="50" type="oneWayPlatform" x="641.333" y="737.333" width="158.667" height="9.33333"/>
   <object id="51" type="oneWayPlatform" x="448" y="769" width="191.5" height="6"/>
-  <object id="52" type="oneWayPlatform" x="640.5" y="747.5" width="5" height="20.5"/>
-  <object id="53" type="oneWayPlatform" x="441.5" y="744.5" width="5.5" height="23.5"/>
-  <object id="54" type="oneWayPlatform" x="984.5" y="651" width="5.5" height="53"/>
   <object id="55" type="oneWayPlatform" x="991" y="704.5" width="255.5" height="8"/>
   <object id="56" type="oneWayPlatform" x="1311.5" y="671.5" width="64.5" height="7.5"/>
   <object id="57" type="oneWayPlatform" x="1408" y="639.5" width="63.5" height="6.5"/>
   <object id="58" type="oneWayPlatform" x="1537" y="609" width="126" height="7"/>
   <object id="59" type="oneWayPlatform" x="1632.5" y="705.5" width="63.5" height="6.5"/>
   <object id="60" type="oneWayPlatform" x="1409.33" y="768.667" width="412.667" height="10"/>
-  <object id="61" type="oneWayPlatform" x="832" y="800" width="128.667" height="6.66667"/>
-  <object id="62" type="oneWayPlatform" x="1024.67" y="832" width="30" height="6"/>
-  <object id="63" type="oneWayPlatform" x="1088.67" y="832.667" width="61.3333" height="7.33333"/>
-  <object id="64" type="oneWayPlatform" x="1184.67" y="802" width="94.6667" height="6.66667"/>
+  <object id="61" type="oneWayPlatform" x="801.424" y="809.091" width="93.5761" height="6.66667"/>
+  <object id="62" type="oneWayPlatform" x="1025.12" y="801" width="30" height="6"/>
+  <object id="63" type="oneWayPlatform" x="1089.49" y="801.212" width="61.3333" height="7.33333"/>
+  <object id="64" type="oneWayPlatform" x="1184.85" y="769.273" width="94.6667" height="6.66667"/>
  </objectgroup>
  <objectgroup id="6" name="platform">
   <object id="65" type="platform" x="192" y="865" width="574" height="16"/>

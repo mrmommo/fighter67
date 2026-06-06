@@ -1,5 +1,6 @@
 package com.nhom67.platformfighter.entity;
 
+import com.almasb.fxgl.dsl.components.ExpireCleanComponent;
 import com.almasb.fxgl.entity.Entity;
 import com.almasb.fxgl.entity.SpawnData;
 import com.almasb.fxgl.entity.Spawns;
@@ -11,6 +12,8 @@ import com.almasb.fxgl.physics.PhysicsComponent;
 import com.almasb.fxgl.physics.box2d.dynamics.BodyType;
 import static com.almasb.fxgl.dsl.FXGL.*;
 import com.almasb.fxgl.physics.box2d.dynamics.FixtureDef;
+import com.almasb.fxgl.texture.AnimatedTexture;
+import com.almasb.fxgl.texture.AnimationChannel;
 import com.nhom67.platformfighter.entity.component.BulletData;
 import com.nhom67.platformfighter.entity.component.PlayerComponent;
 import com.nhom67.platformfighter.entity.component.AnimationComponent;
@@ -19,6 +22,7 @@ import javafx.geometry.Point2D;
 import com.almasb.fxgl.texture.Texture;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
+import javafx.util.Duration;
 
 public class EntityFactory implements com.almasb.fxgl.entity.EntityFactory {
         public static final short CATEGORY_GROUND = 0x0001; // Sàn cứng
@@ -163,4 +167,20 @@ public class EntityFactory implements com.almasb.fxgl.entity.EntityFactory {
                                 .view(crateTexture)
                                 .build();
         }
+        @Spawns("deathEffect")
+        public Entity newDeathEffect(SpawnData data) {
+            // Khởi tạo hoạt ảnh chết
+            AnimationChannel animDeath = new AnimationChannel(image( "boom.png"), 8, 64, 64, Duration.seconds(0.8), 0, 7);
+            AnimatedTexture texture = new AnimatedTexture(animDeath);
+
+            // Lật hình theo hướng nhân vật lúc chết
+            texture.play(); // Chạy 1 lần duy nhất
+            play("killboom.wav");
+
+            return entityBuilder(data)
+                    .view(texture)
+                    // Tự động xóa thực thể này khỏi thế giới game sau 0.8 giây
+                    .with(new ExpireCleanComponent(Duration.seconds(0.8)))
+                    .build();
+    }
 }
