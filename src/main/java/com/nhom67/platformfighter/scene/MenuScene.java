@@ -126,6 +126,7 @@ public class MenuScene extends FXGLMenu {
             isStartingGame = false;
             return;
         }
+        com.nhom67.platformfighter.app.FighterApp.isIngame = false;
         SoundManager.playMusic("menu_track_01.mp3");
     }
 

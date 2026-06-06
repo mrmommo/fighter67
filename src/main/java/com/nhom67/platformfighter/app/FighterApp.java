@@ -73,9 +73,11 @@ public class FighterApp extends GameApplication {
     // Map và chế độ chơi được chọn từ SelectScene
     public static MapRegistry selectedMap = MapRegistry.MAP_3;
     public static GameMode gameMode = GameMode.TWO_PLAYER;
+    public static boolean isIngame = false;
 
     @Override
     protected void initGame() {
+        isIngame = true;
         // Dừng các nhạc cũ (nhạc menu)
         com.nhom67.platformfighter.util.SoundManager.stopMusic();
 

@@ -7,9 +7,9 @@ import static com.almasb.fxgl.dsl.FXGL.*;
 
 public class SoundManager {
 
-    private static double sfxVolume = 0.5;
-    private static double musicVolume = 0.5;
-    private static Music currentMusic;
+    private static volatile double sfxVolume = 0.5;
+    private static volatile double musicVolume = 0.5;
+    private static volatile Music currentMusic;
 
     public static void init() {
         FXGL.getSettings().setGlobalMusicVolume(musicVolume);
@@ -31,7 +31,7 @@ public class SoundManager {
         }
     }
 
-    private static String currentMusicName = "";
+    private static volatile String currentMusicName = "";
 
     // Phát nhạc nền (lặp lại)
     public static void playMusic(String fileName) {
@@ -66,7 +66,9 @@ public class SoundManager {
                 getAudioPlayer().stopMusic(currentMusic);
                 currentMusic = null;
                 currentMusicName = "";
-            } catch (Exception ignored) {}
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 
