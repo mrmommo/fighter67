@@ -61,14 +61,12 @@ public class SoundManager {
     }
 
     public static void stopMusic() {
-        if (currentMusic != null) {
-            try {
-                getAudioPlayer().stopMusic(currentMusic);
-                currentMusic = null;
-                currentMusicName = "";
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+        try {
+            getAudioPlayer().stopAllMusic();
+            currentMusic = null;
+            currentMusicName = "";
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
