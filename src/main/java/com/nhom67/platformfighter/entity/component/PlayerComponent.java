@@ -1,6 +1,7 @@
 package com.nhom67.platformfighter.entity.component;
 
 import com.almasb.fxgl.entity.Entity;
+import com.almasb.fxgl.entity.SpawnData;
 import com.almasb.fxgl.entity.component.Component;
 import com.almasb.fxgl.physics.PhysicsComponent;
 import com.almasb.fxgl.time.LocalTimer;
@@ -12,7 +13,11 @@ import com.almasb.fxgl.physics.box2d.dynamics.Filter;
 import com.nhom67.platformfighter.entity.EntityFactory;
 import com.nhom67.platformfighter.entity.EntityType;
 import com.nhom67.platformfighter.entity.component.WeaponData;
+import javafx.geometry.Point2D;
 import javafx.util.Duration;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class PlayerComponent extends Component {
 
@@ -21,8 +26,8 @@ public class PlayerComponent extends Component {
 
     private double currentSpeedX = 0;
     private double maxSpeed = 250;
-    private double acceleration = 2500;
-    private double friction = 2000;
+    private double acceleration = 800;
+    private double friction = 1000;
     private int moveDirection = 0; // -1 left, 1 right, 0 stop
     private int facingDirection = 1; // 1 right, -1 left
 
@@ -183,21 +188,34 @@ public class PlayerComponent extends Component {
         // 2. --- LOGIC QUYẾT ĐỊNH XUYÊN ĐỊA HÌNH NÂNG CAO (ONE-WAY PLATFORM) ---
         // QUAN TRỌNG: Phải xét isMovingUp và isDropping bên ngoài vòng lặp va chạm!
         // Nếu không, Box2D sẽ tính toán va chạm trước khi game kịp đổi mask xuyên qua.
-        boolean isMovingUp = physics.getVelocityY() < -50;
+        boolean isMovingUp = physics.getVelocityY() < -10;
         boolean isInsidePlatform = false;
+        boolean isInsideBySide = false;
+
+
+        List<Entity> platforms = new ArrayList<>();
+
+        platforms.addAll(
+                getGameWorld().getEntitiesByType(
+                        EntityType.ONE_WAY_PLATFORM));
+
+        platforms.addAll(
+                getGameWorld().getEntitiesByType(
+                        EntityType.PLATFORM));
 
         if (getGameWorld() != null) {
-            for (Entity platform : getGameWorld().getEntitiesByType(EntityType.ONE_WAY_PLATFORM)) {
+            for (Entity platform : platforms) {
                 if (getEntity().isColliding(platform)) {
                     double playerBottomY = getEntity().getBottomY();
-                    double platformTop = platform.getY();
+                    double platformTop = platform.getBoundingBoxComponent()
+                            .getMinYWorld();
 
                     // Nếu chân đang kẹt bên trong sàn (thấp hơn mặt trên sàn một chút)
-                    if (playerBottomY > platformTop + 5.0) {
+                    if (playerBottomY > platformTop) {
                         // Để ngăn lỗi lọt hố do rơi quá nhanh, ta kiểm tra thêm lastBottomY
                         // Nếu khung hình trước đang ở trên sàn, mà khung hình này lọt xuống dưới ->
                         // KHÔNG cho xuyên qua
-                        if (lastBottomY <= platformTop + 5.0) {
+                        if (lastBottomY <= platformTop) {
                             // Giữ nguyên isInsidePlatform = false để Box2D đẩy nhân vật ngược lên mặt sàn
                         } else {
                             isInsidePlatform = true;
@@ -212,7 +230,9 @@ public class PlayerComponent extends Component {
 
         // Bất cứ khi nào ĐANG BAY LÊN, ĐANG TỤT XUỐNG, hoặc ĐANG KẸT TRONG SÀN -> Xuyên
         // qua
-        if (isMovingUp || isDropping || isInsidePlatform) {
+        if (isMovingUp || isInsidePlatform || isInsideBySide)
+            newMaskBits = (short) (EntityFactory.CATEGORY_CRATE);
+        else if (isDropping) {
             newMaskBits = (short) (EntityFactory.CATEGORY_GROUND | EntityFactory.CATEGORY_CRATE);
         } else {
             // Còn lại -> Va chạm bình thường (Đứng được trên sàn)
@@ -386,6 +406,10 @@ public class PlayerComponent extends Component {
     }
 
     public void loseLife() {
+        Point2D deathPosition = entity.getPosition();
+
+        spawn("deathEffect", new SpawnData(deathPosition));
+
         if (isDead)
             return;
 
