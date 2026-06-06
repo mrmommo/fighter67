@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.shape.*?>
+<?import javafx.scene.text.*?>
+
+<StackPane prefWidth="1920" prefHeight="1080" stylesheets="@styles.css" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml">
+    
+    <Rectangle width="1920" height="1080" fill="rgba(13, 38, 13, 0.85)"/>
+    
+    <VBox alignment="CENTER" spacing="30">
+        <Text fx:id="titleText" text="BATTLE CONCLUDED" styleClass="gameover-title" />
+        <Text fx:id="winnerText" text="WINNER" styleClass="gameover-winner" />
+        
+        <StackPane fx:id="btnReturn" maxWidth="350" maxHeight="60" styleClass="forest-btn">
+            <!-- Background Polygon -->
+            <Polygon fx:id="btnBg" styleClass="forest-btn-bg-solid" 
+                     points="20.0,0.0,350.0,0.0,330.0,60.0,0.0,60.0" />
+            <!-- Accent Polygon -->
+            <Polygon fx:id="btnAccent" styleClass="forest-btn-accent" StackPane.alignment="CENTER_LEFT"
+                     points="20.0,0.0,26.0,0.0,6.0,60.0,0.0,60.0" />
+            <Text text="RETURN TO LOBBY" styleClass="forest-btn-text" />
+        </StackPane>
+    </VBox>
+</StackPane>

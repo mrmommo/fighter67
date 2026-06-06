@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.shape.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.Group?>
+
+<StackPane prefWidth="1920" prefHeight="1080" stylesheets="@styles.css" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml">
+    
+    <!-- uiBox Layer -->
+    <HBox fx:id="uiBox" alignment="CENTER_LEFT" spacing="200" translateX="200">
+        <!-- mainMenuBox -->
+        <VBox fx:id="mainMenuBox" alignment="CENTER_LEFT" spacing="30" translateX="-100" opacity="0">
+            <Text fx:id="titleText" text="FIGHTER&#10;67" styleClass="title-text" textAlignment="CENTER" />
+            
+            <Group fx:id="btnPlay" styleClass="forest-btn">
+                <Polygon styleClass="forest-btn-bg" points="20.0,0.0, 320.0,0.0, 300.0,60.0, 0.0,60.0"/>
+                <Polygon styleClass="forest-btn-accent" points="20.0,0.0, 26.0,0.0, 6.0,60.0, 0.0,60.0"/>
+                <Text text="START BATTLE" styleClass="forest-btn-text" x="60" y="38" />
+            </Group>
+            
+            <Group fx:id="btnSettings" styleClass="forest-btn">
+                <Polygon styleClass="forest-btn-bg" points="20.0,0.0, 320.0,0.0, 300.0,60.0, 0.0,60.0"/>
+                <Polygon styleClass="forest-btn-accent" points="20.0,0.0, 26.0,0.0, 6.0,60.0, 0.0,60.0"/>
+                <Text text="SETTINGS" styleClass="forest-btn-text" x="60" y="38" />
+            </Group>
+            
+            <Group fx:id="btnHowToPlay" styleClass="forest-btn">
+                <Polygon styleClass="forest-btn-bg" points="20.0,0.0, 320.0,0.0, 300.0,60.0, 0.0,60.0"/>
+                <Polygon styleClass="forest-btn-accent" points="20.0,0.0, 26.0,0.0, 6.0,60.0, 0.0,60.0"/>
+                <Text text="HOW TO PLAY" styleClass="forest-btn-text" x="60" y="38" />
+            </Group>
+            
+            <Group fx:id="btnExit" styleClass="forest-btn">
+                <Polygon styleClass="forest-btn-bg" points="20.0,0.0, 320.0,0.0, 300.0,60.0, 0.0,60.0"/>
+                <Polygon styleClass="forest-btn-accent" points="20.0,0.0, 26.0,0.0, 6.0,60.0, 0.0,60.0"/>
+                <Text text="EXIT" styleClass="forest-btn-text" x="60" y="38" />
+            </Group>
+        </VBox>
+    </HBox>
+    
+    <!-- overlayContainer Layer -->
+    <StackPane fx:id="overlayContainer" visible="false">
+        <Rectangle width="1920" height="1080" fill="rgba(0, 0, 0, 0.85)"/>
+        
+        <!-- settingsBox -->
+        <VBox fx:id="settingsBox" alignment="CENTER_LEFT" spacing="30" visible="false" opacity="0" maxWidth="600">
+            <Text text="SETTINGS" styleClass="subtitle-text" />
+            <Label text="Music Volume" styleClass="label-text" />
+            <Slider fx:id="musicSlider" max="1.0" maxWidth="300" />
+            <Label text="SFX Volume" styleClass="label-text" />
+            <Slider fx:id="sfxSlider" max="1.0" maxWidth="300" />
+        </VBox>
+        
+        <!-- howToPlayBox -->
+        <VBox fx:id="howToPlayBox" alignment="CENTER_LEFT" spacing="20" visible="false" opacity="0" maxWidth="800">
+            <Text text="HOW TO PLAY" styleClass="subtitle-text" />
+            <HBox alignment="CENTER_LEFT" spacing="10">
+                <Text text="A / D" styleClass="how-to-key"/>
+                <Text text=" - Di chuyển trái / phải" styleClass="how-to-desc"/>
+            </HBox>
+            <HBox alignment="CENTER_LEFT" spacing="10">
+                <Text text="W" styleClass="how-to-key"/>
+                <Text text=" - Nhảy (Nhấn 2 lần để nhảy kép)" styleClass="how-to-desc"/>
+            </HBox>
+            <HBox alignment="CENTER_LEFT" spacing="10">
+                <Text text="J" styleClass="how-to-key"/>
+                <Text text=" - Tấn công nhẹ" styleClass="how-to-desc"/>
+            </HBox>
+            <HBox alignment="CENTER_LEFT" spacing="10">
+                <Text text="K" styleClass="how-to-key"/>
+                <Text text=" - Tấn công mạnh" styleClass="how-to-desc"/>
+            </HBox>
+            <HBox alignment="CENTER_LEFT" spacing="10">
+                <Text text="SPACE" styleClass="how-to-key"/>
+                <Text text=" - Lướt (Dash)" styleClass="how-to-desc"/>
+            </HBox>
+            <HBox alignment="CENTER_LEFT" spacing="10">
+                <Text text="L" styleClass="how-to-key"/>
+                <Text text=" - Phóng đạn" styleClass="how-to-desc"/>
+            </HBox>
+            <HBox alignment="CENTER_LEFT" spacing="10">
+                <Text text="S" styleClass="how-to-key"/>
+                <Text text=" - Phòng thủ (Block)" styleClass="how-to-desc"/>
+            </HBox>
+        </VBox>
+    </StackPane>
+    
+</StackPane>
