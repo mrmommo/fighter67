@@ -13,21 +13,9 @@ public enum MapRegistry {
             "map3.tmx",
             "Garden",
             "maps/map3background.png"),
-    MAP_4(
-            "map4.tmx",
-            "Greenzone",
-            "maps/map4background.png"),
-    MAP_5(
-            "map5.tmx",
-            "Factory",
-            "maps/map5background.png"),
-    MAP_6(
-            "map6.tmx", 
-            "Cakecombat",
-            "maps/map6background.png"),
     MAP_7(
             "map7.tmx",
-            "Volcano",
+            "Neon City",
             "maps/map7background.png");
 
     private final String tmxFile;
