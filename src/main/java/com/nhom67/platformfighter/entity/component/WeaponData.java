@@ -12,7 +12,7 @@ public record WeaponData(
     public static WeaponData pistol() {
         return new WeaponData(
                 WeaponType.PISTOL,
-                new BulletData(10, 700, 8, 12, 500, 5),
+                new BulletData(10, 700, 8, 12, 600, 5),
                 7, 0.3, true, 1);
     }
 
@@ -33,13 +33,13 @@ public record WeaponData(
     public static WeaponData uzi() {
         return new WeaponData(
                 WeaponType.UZI,
-                new BulletData(10, 800, 8, 12, 500, 5),
+                new BulletData(10, 800, 8, 12, 600, 5),
                 40, 0.05, false, 20);
     }
     public static WeaponData ak() {
         return new WeaponData(
                 WeaponType.AK,
-                new BulletData(12, 800, 8, 12, 500, 5),
-                30, 0.2, false, 5);
+                new BulletData(12, 800, 8, 12, 600, 5),
+                30, 0.1, false, 5);
     }
 }
