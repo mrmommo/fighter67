@@ -71,7 +71,7 @@ public class FighterApp extends GameApplication {
     }
 
     // Map và chế độ chơi được chọn từ SelectScene
-    public static MapRegistry selectedMap = MapRegistry.MAP_1;
+    public static MapRegistry selectedMap = MapRegistry.MAP_3;
     public static GameMode gameMode = GameMode.TWO_PLAYER;
 
     @Override
