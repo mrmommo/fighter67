@@ -5,6 +5,7 @@ public enum WeaponType {
     SHOTGUN,
     RIFLE,
     UZI,
+    AK,
     ROCKET_LAUNCHER,
     LASER
 }

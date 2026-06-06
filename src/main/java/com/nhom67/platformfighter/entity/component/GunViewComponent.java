@@ -40,6 +40,9 @@ public class GunViewComponent extends Component {
                 case RIFLE:
                     gunImageView.setTranslateX(5);
                     break;
+                case AK:
+                    gunImageView.setTranslateX(0);
+                    break;
                 default:
                     gunImageView.setTranslateX(20);
                     break;
@@ -56,6 +59,9 @@ public class GunViewComponent extends Component {
                     break;
                 case RIFLE:
                     gunImageView.setTranslateX(-20);
+                    break;
+                case AK:
+                    gunImageView.setTranslateX(-2);
                     break;
                 default:
                     gunImageView.setTranslateX(0);
@@ -92,6 +98,10 @@ public class GunViewComponent extends Component {
                         gunImageView.setFitWidth(80);
                         gunImageView.setTranslateY(-10); // Cao hơn (nhỏ hơn 10)
                         break;
+                    case AK:
+                        gunImageView.setFitWidth(65);
+                        gunImageView.setTranslateY(2); // Cao hơn (nhỏ hơn 10)
+                        break;
                     default:
                         gunImageView.setFitWidth(40);
                         gunImageView.setTranslateY(20);
@@ -114,6 +124,8 @@ public class GunViewComponent extends Component {
                 return "/assets/guns/rifle.png";
             case UZI:
                 return "/assets/guns/uzi.png";
+            case AK:
+                return "/assets/guns/AK-47.png";
             default:
                 return "/assets/guns/piston.png";
         }

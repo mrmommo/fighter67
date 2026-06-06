@@ -18,9 +18,10 @@ public class CratePlayerCollision implements CollisionHandlerInterface {
             if (playerComp != null) {
 
                 // Random loại vũ khí
-                WeaponData newWeapon = switch (random.nextInt(3)) {
+                WeaponData newWeapon = switch (random.nextInt(4)) {
                     case 0 -> WeaponData.shotgun();
                     case 1 -> WeaponData.rifle();
+                    case 2 -> WeaponData.ak();
                     default -> WeaponData.uzi();
                 };
                 playerComp.equipWeapon(newWeapon);
