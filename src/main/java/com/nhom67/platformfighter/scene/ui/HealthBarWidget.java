@@ -45,7 +45,6 @@ public class HealthBarWidget extends Pane {
     private final Color accent;
 
     private Rectangle hfg; // health foreground bar
-    private Text hpTxt;
     private Text weaponTxt;
     private Text ammoTxt;
     private ImageView weaponIV;
@@ -90,12 +89,14 @@ public class HealthBarWidget extends Pane {
         buildWeapon();
     }
 
-    /** Row 1: [Name] [===bar===] [HP#] — mirrored for P2 */
+    /** Row 1 */
     private void buildHealthRow(String label) {
-        // Bar X: leave room for name/hp text on respective sides
-        bx = left ? (PAD + 34) : (PAD + 40);
+        if (left) {
+            bx = PAD + 34;
+        } else {
+            bx = PAD + 50;
+        }
 
-        // Bar background
         Rectangle hbg = new Rectangle(BW, BH);
         hbg.setX(bx);
         hbg.setY(R1Y);
@@ -105,7 +106,6 @@ public class HealthBarWidget extends Pane {
         hbg.setStroke(Color.rgb(255, 255, 255, 0.08));
         hbg.setStrokeWidth(1);
 
-        // Bar foreground (health)
         hfg = new Rectangle(BW, BH);
         hfg.setX(bx);
         hfg.setY(R1Y);
@@ -113,24 +113,16 @@ public class HealthBarWidget extends Pane {
         hfg.setArcHeight(6);
         hfg.setFill(accentGrad());
 
-        // Player label
         Text lbl = new Text(label);
         lbl.setFont(Font.font("Arial", FontWeight.BOLD, 18));
         lbl.setFill(accent);
         lbl.setX(left ? PAD : (bx + BW + 6));
         lbl.setY(R1Y + BH - 2);
 
-        // HP number
-        hpTxt = new Text(player.getCurrentHealth() + "HP");
-        hpTxt.setFont(Font.font("Arial", FontWeight.BOLD, 16));
-        hpTxt.setFill(Color.WHITE);
-        hpTxt.setX(left ? (bx + BW + 6) : PAD);
-        hpTxt.setY(R1Y + BH - 2);
-
-        getChildren().addAll(hbg, hfg, lbl, hpTxt);
+        getChildren().addAll(hbg, hfg, lbl); // bỏ hpTxt
     }
 
-    /** Row 2: life icons (heart.png tinted) */
+    /** Row 2: hearts */
     private void buildHearts() {
         Image img = null;
         try {
@@ -139,7 +131,7 @@ public class HealthBarWidget extends Pane {
         }
 
         int max = player.getMaxLives();
-        double block = max * (HS + HG) - HG; // total hearts-row width
+        double block = max * (HS + HG) - HG;
 
         for (int i = 0; i < max; i++) {
             ImageView iv = new ImageView(img);
@@ -148,10 +140,14 @@ public class HealthBarWidget extends Pane {
             iv.setPreserveRatio(true);
             iv.setSmooth(true);
 
-            // P1: hearts start from left. P2: hearts anchor to right.
-            double ix = left
-                    ? PAD + i * (HS + HG)
-                    : (PW - PAD - block + i * (HS + HG));
+            double ix;
+            if (left) {
+                // P1: hearts bắt đầu từ PAD (trái)
+                ix = PAD + i * (HS + HG);
+            } else {
+                // P2: hearts anchor phải panel (đối xứng P1)
+                ix = PW - PAD - block + i * (HS + HG);
+            }
 
             iv.setLayoutX(ix);
             iv.setLayoutY(R2Y + 1);
@@ -161,19 +157,21 @@ public class HealthBarWidget extends Pane {
         }
     }
 
-    /** Row 2: gun icon + weapon name + ammo */
     private void buildWeapon() {
         int max = player.getMaxLives();
-        double block = max * (HS + HG) - HG;
+        double block = max * (HS + HG) - HG; // tổng width của hearts row
 
-        // P1: weapon to the RIGHT of hearts. P2: weapon to the LEFT of hearts.
         double gx, tx;
         if (left) {
+            // P1: [hearts từ PAD] [gun] [text]
             gx = PAD + block + 10;
-            tx = gx + 42;
+            tx = gx + GH + 6;
         } else {
-            tx = PAD;
-            gx = tx + 70;
+            // P2 mirror: [text] [gun] [hearts anchor phải]
+            // hearts bắt đầu tại: PW - PAD - block
+            // gun icon nằm NGAY TRƯỚC hearts
+            gx = PW - PAD - block - GH - 10;
+            tx = gx - 70; // text nằm trước gun icon
         }
 
         weaponIV = new ImageView();
@@ -215,8 +213,6 @@ public class HealthBarWidget extends Pane {
         hfg.setFill(crit ? redGrad() : accentGrad());
         hfg.setWidth(w);
         hfg.setX(left ? bx : bx + BW - w); // P1 fills L→R, P2 fills R→L
-
-        hpTxt.setText((int) Math.ceil(displayHp) + "HP");
 
         // Life icons: alive = accent tint, dead = dark
         int lives = player.getCurrentLives();
