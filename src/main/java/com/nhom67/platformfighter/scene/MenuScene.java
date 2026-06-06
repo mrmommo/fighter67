@@ -102,6 +102,9 @@ public class MenuScene extends FXGLMenu {
             loader.setController(controller);
             javafx.scene.Parent uiRoot = loader.load();
             getContentRoot().getChildren().add(uiRoot);
+
+            // Áp dụng theme của map đầu tiên ngay khi UI sẵn sàng
+            controller.applyMapTheme(maps[currentBgIndex].getAccentColor());
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -231,6 +234,13 @@ public class MenuScene extends FXGLMenu {
 
             currentBgIndex = nextIndex;
             isAnimating = false;
+
+            // Đổi màu button theo accent color của map mới
+            if (controller != null) {
+                com.nhom67.platformfighter.map.MapRegistry[] maps =
+                        com.nhom67.platformfighter.map.MapRegistry.values();
+                controller.applyMapTheme(maps[currentBgIndex].getAccentColor());
+            }
         });
 
         fadeOut.play();

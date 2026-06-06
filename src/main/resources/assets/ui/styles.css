@@ -41,18 +41,18 @@
 /* ==== FOREST BUTTON (MAIN MENU) ==== */
 
 .forest-btn-bg {
-    -fx-fill: rgba(30, 51, 21, 0.75); /* #1e3315 */
-    -fx-stroke: rgba(168, 230, 207, 0.6); /* #a8e6cf */
+    -fx-fill: rgba(0, 0, 0, 0.18);
+    -fx-stroke: rgba(168, 230, 207, 0.6);
     -fx-stroke-width: 2;
 }
 
 .forest-btn:hover .forest-btn-bg {
-    -fx-fill: rgba(45, 74, 34, 0.95); /* #2d4a22 */
+    -fx-fill: rgba(0, 0, 0, 0.38);
     -fx-stroke: rgba(168, 230, 207, 1.0);
 }
 
 .forest-btn:pressed .forest-btn-bg {
-    -fx-fill: #0a1207;
+    -fx-fill: rgba(0, 0, 0, 0.55);
 }
 
 .forest-btn-accent {
@@ -73,15 +73,15 @@
 /* ==== FOREST BUTTON (GAMEOVER & SELECT SCENE) ==== */
 /* Có opacity hơi khác một chút, hoặc có thể dùng chung class và overide trong Java nếu cần. Nhưng ta có thể làm chung class */
 .forest-btn-bg-solid {
-    -fx-fill: rgba(30, 51, 21, 0.9);
+    -fx-fill: rgba(0, 0, 0, 0.18);
     -fx-stroke: rgba(168, 230, 207, 0.8);
     -fx-stroke-width: 1;
 }
 .forest-btn:hover .forest-btn-bg-solid {
-    -fx-fill: rgba(45, 74, 34, 1.0);
+    -fx-fill: rgba(0, 0, 0, 0.38);
 }
 .forest-btn:pressed .forest-btn-bg-solid {
-    -fx-fill: #0a1207;
+    -fx-fill: rgba(0, 0, 0, 0.55);
 }
 
 /* ==== SELECT SCENE ==== */
