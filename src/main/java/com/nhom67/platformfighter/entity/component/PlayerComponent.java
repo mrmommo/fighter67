@@ -298,20 +298,24 @@ public class PlayerComponent extends Component {
                 double bulletSpawnY = entity.getY();
                 switch (currentWeapon.type()) {
                     case PISTOL:
-                        bulletSpawnY += 27;
+                        bulletSpawnY += 26;
                         play("pistol.wav");
                         break;
                     case SHOTGUN:
-                        bulletSpawnY += 15;
+                        bulletSpawnY += 10;
                         play("shotgun.wav");
                         break;
                     case RIFLE:
-                        bulletSpawnY += 27;
+                        bulletSpawnY += 15;
                         play("AWM.wav");
                         break;
                     case UZI:
-                        bulletSpawnY += 27;
+                        bulletSpawnY += 22;
                         play("uzi.wav");
+                        break;
+                    case AK:
+                        bulletSpawnY += 22;
+                        play("ak.wav");
                         break;
                     default:
                         bulletSpawnY += 27;
@@ -319,7 +323,7 @@ public class PlayerComponent extends Component {
                 }
 
                 spawn("bullet",
-                        new com.almasb.fxgl.entity.SpawnData(entity.getX() + 32 + (facingDirection * 18), bulletSpawnY)
+                        new com.almasb.fxgl.entity.SpawnData(entity.getX() + 50 + (facingDirection * 30), bulletSpawnY)
                                 .put("bulletData", currentWeapon.bulletData())
                                 .put("facingRight", facingDirection == 1)
                                 .put("weaponType", currentWeapon.type())

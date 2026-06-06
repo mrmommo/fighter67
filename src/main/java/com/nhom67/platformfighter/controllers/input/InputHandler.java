@@ -76,7 +76,7 @@ public class InputHandler {
 
         getInput().addAction(new UserAction("Shoot") {
             @Override
-            protected void onActionBegin() {
+            protected void onAction() {
                 if (player1 != null) {
                     player1.getComponent(PlayerComponent.class).shoot();
                 }
@@ -133,7 +133,7 @@ public class InputHandler {
 
         getInput().addAction(new UserAction("Shoot 2") {
             @Override
-            protected void onActionBegin() {
+            protected void onAction() {
                 if (canControlPlayer2()) {
                     player2.getComponent(PlayerComponent.class).shoot();
                 }
