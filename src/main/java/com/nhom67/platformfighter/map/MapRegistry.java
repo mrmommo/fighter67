@@ -30,7 +30,12 @@ public enum MapRegistry {
             "map6.tmx", 
             "Cakecombat",
             4,
-            "menu_track_01.mp3"); // Using track 01 for map 6
+            "menu_track_01.mp3"), // Using track 01 for map 6
+    MAP_7(
+            "map7.tmx", 
+            "Volcano",
+            4,
+            "menu_track_01.mp3");
             
     private final String tmxFile;
     private final String displayName;
