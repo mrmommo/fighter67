@@ -12,7 +12,7 @@
     <HBox fx:id="uiBox" alignment="CENTER_LEFT" spacing="200" translateX="200">
         <!-- mainMenuBox -->
         <VBox fx:id="mainMenuBox" alignment="CENTER_LEFT" spacing="30" translateX="-100" opacity="0">
-            <Text fx:id="titleText" text="FIGHTER&#10;67" styleClass="title-text" textAlignment="CENTER" />
+            <Text fx:id="titleText" text="" styleClass="title-text" textAlignment="CENTER" />
             
             <Group fx:id="btnPlay" styleClass="forest-btn">
                 <Polygon styleClass="forest-btn-bg" points="20.0,0.0, 320.0,0.0, 300.0,60.0, 0.0,60.0"/>

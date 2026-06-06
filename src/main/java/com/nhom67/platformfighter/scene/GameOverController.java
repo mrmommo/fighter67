@@ -75,6 +75,7 @@ public class GameOverController {
         
         btnReturn.setOnMouseClicked(e -> {
             SoundManager.playClickSound();
+            FighterApp.isIngame = false;
             getSceneService().popSubScene();
             getGameController().gotoMainMenu();
             getSceneService().pushSubScene(new SelectScene());
