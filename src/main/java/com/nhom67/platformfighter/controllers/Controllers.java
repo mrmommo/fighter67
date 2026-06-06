@@ -10,8 +10,6 @@ import com.nhom67.platformfighter.controllers.collisions.CratePlayerCollision;
 import com.nhom67.platformfighter.controllers.input.InputHandler;
 
 public class Controllers {
-    private Entity player1;
-    private Entity player2;
     private final CollisionRegistry collisionRegistry = new CollisionRegistry();
     private final InputHandler inputHandler = new InputHandler();
 
@@ -29,8 +27,6 @@ public class Controllers {
     }
 
     public void setPlayers(Entity p1, Entity p2, boolean player2IsBot) {
-        this.player1 = p1;
-        this.player2 = p2;
         inputHandler.setPlayers(p1, p2);
         inputHandler.setPlayer2BotControlled(player2IsBot);
     }
