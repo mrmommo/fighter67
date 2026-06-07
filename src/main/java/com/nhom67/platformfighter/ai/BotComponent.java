@@ -8,12 +8,16 @@ import com.nhom67.platformfighter.entity.EntityType;
 import com.nhom67.platformfighter.entity.component.PlayerComponent;
 import javafx.util.Duration;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static com.almasb.fxgl.dsl.FXGL.*;
+import static java.lang.Math.*;
 
 public class BotComponent extends Component {
 
     // --- State Machine ---
-    private enum BotState { APPROACH, HOLD, RETREAT, GRAB_CRATE }
+    private enum BotState { APPROACH, HOLD, RETREAT, GRAB_CRATE, AVOID_DOWN_PLATFORM }
     private BotState state = BotState.HOLD;
 
     // --- References ---
@@ -26,13 +30,13 @@ public class BotComponent extends Component {
 
     // --- Constants (khoảng cách theo trục X) ---
     private static final double MIN_COMBAT_DIST = 35;  // px – dưới mức này thì lui
-    private static final double IDEAL_MAX_DIST  = 220;  // px – trên mức này thì tiến lại
+    private static final double IDEAL_MAX_DIST  = 50;  // px – trên mức này thì tiến lại
     private static final double SHOOT_RANGE     = 10080;  // px – tầm tối đa để tiếp cận
     private static final double SHOOT_ALIGN_Y   = 70;   // px – chênh lệch Y tối đa (ngang hàng)
     private static final double CRATE_PREFER    = 380;  // px – chỉ nhặt crate khi đủ xa đối thủ
     private static final double JUMP_DY_THRESH  = -60;  // py – nhảy khi target cao hơn 60px
     private static final double DROP_DY_THRESH  = 80;   // py – tụt sàn khi target thấp hơn 80px
-    private static final double JUMP_COOLDOWN       = 0.65; // s – nghỉ giữa các lần nhảy
+    private static final double JUMP_COOLDOWN       = 0.1; // s – nghỉ giữa các lần nhảy
     private static final double DOUBLE_JUMP_DY_THRESH = -25; // py – vẫn cần lên khi nhảy lần 2
     private static final double DOUBLE_JUMP_VY_MAX    = 80;  // vy – nhảy đôi gần đỉnh / đang rơi nhẹ
 
@@ -54,7 +58,7 @@ public class BotComponent extends Component {
     @Override
     public void onUpdate(double tpf) {
         // --- Guard: bot đã chết hoặc target không hợp lệ ---
-        if (playerComp == null || playerComp.isDead()) return;
+        if (playerComp == null || playerComp.isRespawning()) return;
         if (playerComp.isHitStunned()) {
             playerComp.stop();
             return;
@@ -62,7 +66,7 @@ public class BotComponent extends Component {
         if (target == null || !target.isActive()) return;
 
         PlayerComponent targetComp = target.getComponent(PlayerComponent.class);
-        if (targetComp != null && targetComp.isDead()) {
+        if (targetComp != null && targetComp.isRespawning()) {
             playerComp.stop();
             return;
         }
@@ -70,26 +74,35 @@ public class BotComponent extends Component {
         // --- Tính vector tới target ---
         double dx      = target.getX() - entity.getX();
         double dy      = target.getY() - entity.getY();
-        double distX   = Math.abs(dx);
+        double distX   = abs(dx);
+        double distance = entity.distance(target);
         int    dirToTarget = dx > 0 ? 1 : -1;
 
         // --- Tìm crate gần nhất ---
         Entity nearestCrate  = findNearestCrate();
         double crateDist     = nearestCrate != null
-                ? Math.abs(nearestCrate.getX() - entity.getX())
+                ? getEntity().distance(nearestCrate)
                 : Double.MAX_VALUE;
 
+        // --- Tìm đáy map ---
+        double bottomPlatform = Double.MIN_VALUE;
+        for (Entity platform : getGameWorld().getEntitiesByType(EntityType.PLATFORM)){
+            double platformTop = platform.getBoundingBoxComponent()
+                    .getMinYWorld();
+            if (platformTop > bottomPlatform) bottomPlatform = platformTop;
+        }
+
+
         // --- Chọn state (ưu tiên giữ khoảng cách bắn) ---
-        if (distX < MIN_COMBAT_DIST) {
-            state = BotState.RETREAT;
-        } else if (distX > SHOOT_RANGE) {
-            state = BotState.APPROACH;
-        } else if (nearestCrate != null
-                && crateDist < distX
-                && crateDist < CRATE_PREFER
-                && distX >= MIN_COMBAT_DIST) {
+        if (getEntity().getBottomY() > bottomPlatform)
+            state = BotState.AVOID_DOWN_PLATFORM;
+        else if (nearestCrate != null
+                && crateDist < distance) {
             state = BotState.GRAB_CRATE;
-        } else if (distX > IDEAL_MAX_DIST) {
+        }
+        else if (distance < MIN_COMBAT_DIST && target.getY() <= bottomPlatform) {
+            state = BotState.RETREAT;
+        } else if (distance > IDEAL_MAX_DIST && target.getY() <= bottomPlatform) {
             state = BotState.APPROACH;
         } else {
             state = BotState.HOLD;
@@ -122,6 +135,43 @@ public class BotComponent extends Component {
                 int    crateDir = crateDx > 0 ? 1 : -1;
                 playerComp.setMoveDirection(crateDir);
                 tryJump(nearestCrate.getY() - entity.getY());
+                tryDropDown(nearestCrate.getY() - entity.getY());
+            }
+            case AVOID_DOWN_PLATFORM -> {
+                double nearestPlatform = Double.MAX_VALUE;
+                Entity nearestPlatformEntity = null;
+                List<Entity> platforms = new ArrayList<>();
+
+                platforms.addAll(
+                        getGameWorld().getEntitiesByType(
+                                EntityType.ONE_WAY_PLATFORM));
+
+                platforms.addAll(
+                        getGameWorld().getEntitiesByType(
+                                EntityType.PLATFORM));
+                for (Entity platform : platforms){
+                    double platform_right_dx = platform.getRightX() - entity.getX();
+                    double platform_left_dx = platform.getBoundingBoxComponent()
+                            .getMinXWorld() - entity.getX();
+                    double platform_dy = platform.getY() - entity.getY();
+                    double dist_left_platform = sqrt(platform_left_dx * platform_left_dx + platform_dy * platform_dy);
+                    double dist_right_platform = sqrt(platform_right_dx * platform_right_dx + platform_dy * platform_dy);
+                    if (dist_right_platform < nearestPlatform)
+                    {
+                        nearestPlatform = dist_right_platform;
+                        nearestPlatformEntity = platform;
+                    }
+                    if (dist_left_platform < nearestPlatform)
+                    {
+                        nearestPlatform = dist_left_platform;
+                        nearestPlatformEntity = platform;
+                    }
+                }
+                playerComp.setMoveDirection(entity.getX() < nearestPlatformEntity.getCenter().getX() ? 1 : -1);
+                if (jumpCooldownTimer.elapsed(Duration.seconds(JUMP_COOLDOWN))) {
+                    playerComp.jump();
+                    jumpCooldownTimer.capture();
+                }
             }
         }
     }
@@ -138,8 +188,8 @@ public class BotComponent extends Component {
     }
 
     private boolean canShoot(double distX, double dy) {
-        boolean closeEnough = distX <= IDEAL_MAX_DIST;
-        boolean sameLevel = Math.abs(dy) <= SHOOT_ALIGN_Y;
+        boolean closeEnough = distX <= SHOOT_RANGE;
+        boolean sameLevel = abs(dy) <= SHOOT_ALIGN_Y;
         return closeEnough && sameLevel;
     }
 
@@ -182,7 +232,7 @@ public class BotComponent extends Component {
         Entity nearest = null;
         double minDist  = Double.MAX_VALUE;
         for (Entity crate : crates) {
-            double d = Math.abs(crate.getX() - entity.getX());
+            double d = getEntity().distance(crate);
             if (d < minDist) {
                 minDist = d;
                 nearest = crate;

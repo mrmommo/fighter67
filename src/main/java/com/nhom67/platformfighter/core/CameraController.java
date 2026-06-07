@@ -20,8 +20,8 @@ public class CameraController {
 
     // Smooth follow parameters (Tốc độ mượt, số càng lớn càng nhanh)
     private final double posSmoothSpeed = 8.0; 
-    private final double zoomOutSpeed = 12.0; // Phóng to góc nhìn (zoom out) nhanh để không mất nhân vật khỏi màn hình
-    private final double zoomInSpeed = 4.0;   // Thu hẹp góc nhìn (zoom in) chậm rãi để tránh chóng mặt
+    private final double zoomOutSpeed = 9.0; // Phóng to góc nhìn (zoom out) nhanh để không mất nhân vật khỏi màn hình
+    private final double zoomInSpeed = 3.0;   // Thu hẹp góc nhìn (zoom in) chậm rãi để tránh chóng mặt
 
     // Tăng giới hạn zoom để cho phép phóng to khi gần và thu nhỏ khi xa
     private final double zoomMin = 1.0; // Zoom out khi xa nhau

@@ -29,7 +29,7 @@ public class PlayerComponent extends Component {
     private double currentSpeedX = 0;
     private double maxSpeed = 250;
     private double acceleration = 800;
-    private double friction = 1800;
+    private double friction = 2000;
     private int moveDirection = 0; // -1 left, 1 right, 0 stop
     private int facingDirection = 1; // 1 right, -1 left
 
@@ -202,7 +202,6 @@ public class PlayerComponent extends Component {
         // Nếu không, Box2D sẽ tính toán va chạm trước khi game kịp đổi mask xuyên qua.
         boolean isMovingUp = physics.getVelocityY() < -10;
         boolean isInsidePlatform = false;
-        boolean isInsideBySide = false;
 
 
         List<Entity> platforms = new ArrayList<>();
@@ -242,7 +241,7 @@ public class PlayerComponent extends Component {
 
         // Bất cứ khi nào ĐANG BAY LÊN, ĐANG TỤT XUỐNG, hoặc ĐANG KẸT TRONG SÀN -> Xuyên
         // qua
-        if (isMovingUp || isInsidePlatform || isInsideBySide)
+        if (isMovingUp || isInsidePlatform)
             newMaskBits = (short) (EntityFactory.CATEGORY_CRATE);
         else if (isDropping) {
             newMaskBits = (short) (EntityFactory.CATEGORY_GROUND | EntityFactory.CATEGORY_CRATE);
@@ -516,6 +515,9 @@ public class PlayerComponent extends Component {
         return isDead;
     }
 
+    public boolean isRespawning(){
+        return  isRespawning;
+    }
     public void setDead(boolean dead) {
         isDead = dead;
     }
