@@ -169,6 +169,6 @@ fighter67/
 
 ## 👥 Nhóm phát triển
 
-Dự án được thực hiện bởi **Nhóm 67** trong khuôn khổ môn học lập trình game.
+Dự án được thực hiện bởi **Nhóm 67** trong môn học lập trình hướng đối tượng.
 
 ---
