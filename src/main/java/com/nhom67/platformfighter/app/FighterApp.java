@@ -93,8 +93,8 @@ public class FighterApp extends GameApplication {
         }
 
         //
-        player = spawn("player", new SpawnData(400, 0).put("color", Color.GREEN));
-        player2 = spawn("player", new SpawnData(1520, 0).put("color", Color.BLUE));
+        player = spawn("player", new SpawnData(400, -2000).put("color", Color.GREEN));
+        player2 = spawn("player", new SpawnData(1520, -2000).put("color", Color.BLUE));
 
         boolean vsBot = gameMode == GameMode.VS_BOT;
         if (vsBot) {
