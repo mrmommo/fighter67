@@ -26,7 +26,9 @@ public class FighterApp extends GameApplication {
     Controllers controller = new Controllers();
     private GameHUD gameHUD;
     private RoundManager roundManager;
-    private CameraController cameraController; // ✅ THÊM
+    private CameraController cameraController;
+
+    private boolean wasAudioStopped = false;
 
     @Override
     protected void initSettings(GameSettings settings) {
@@ -35,9 +37,7 @@ public class FighterApp extends GameApplication {
         settings.setTitle("67-Fighter");
         settings.setVersion("1.0");
         settings.setAppIcon("ui/icon.png");
-        // Bật Main Menu
         settings.setMainMenuEnabled(true);
-        // Cài đặt Scene Factory tùy chỉnh của chúng ta
         settings.setSceneFactory(new AppSceneFactory());
     }
 
@@ -50,6 +50,9 @@ public class FighterApp extends GameApplication {
         String p2Label = gameMode == GameMode.VS_BOT ? "BOT" : "P2";
         gameHUD.initHUD(p1Comp, p2Comp, p2Label);
         roundManager = new RoundManager();
+
+        // ⭐ Thêm xử lý window focus events
+        setupWindowFocusListener();
     }
 
     @Override
@@ -64,7 +67,6 @@ public class FighterApp extends GameApplication {
             roundManager.onUpdate(tpf);
         }
 
-        // ✅ THÊM: Update camera smooth follow
         if (cameraController != null) {
             cameraController.update(tpf);
         }
@@ -92,7 +94,6 @@ public class FighterApp extends GameApplication {
             SoundManager.playMusic(selectedMap.getMusicTrack());
         }
 
-        //
         player = spawn("player", new SpawnData(400, -100).put("color", Color.GREEN));
         player2 = spawn("player", new SpawnData(1520, -100).put("color", Color.BLUE));
 
@@ -108,7 +109,7 @@ public class FighterApp extends GameApplication {
         set("player", player);
         set("player2", player2);
 
-        // ✅ THÊM: Khởi tạo camera controller với map dimensions thật
+        // Khởi tạo camera controller với map dimensions thật
         cameraController = new CameraController(player, player2, mapDims.width, mapDims.height);
     }
 
@@ -120,6 +121,35 @@ public class FighterApp extends GameApplication {
     @Override
     protected void initPhysics() {
         controller.initPhysics();
+    }
+
+    // ⭐ Xử lý window focus/unfocus để tránh trồng nhạc
+    private void setupWindowFocusListener() {
+        try {
+            javafx.stage.Window window = getGameScene().getRoot().getScene().getWindow();
+            if (window == null)
+                return;
+
+            // Khi window mất focus (minimize, tab out)
+            window.focusedProperty().addListener((obs, oldVal, newVal) -> {
+                if (!newVal) {
+                    // Window mất focus → pause nhạc
+                    wasAudioStopped = true;
+                    SoundManager.pauseMusic();
+                    System.out.println("[FighterApp] Window lost focus - music paused");
+                } else {
+                    // Window được focus lại
+                    if (wasAudioStopped && isIngame) {
+                        // Chỉ resume nếu đang trong game
+                        SoundManager.resumeMusic();
+                        System.out.println("[FighterApp] Window gained focus - music resumed");
+                        wasAudioStopped = false;
+                    }
+                }
+            });
+        } catch (Exception e) {
+            System.err.println("[FighterApp] Failed to setup window focus listener: " + e.getMessage());
+        }
     }
 
     public static void main(String[] args) {
