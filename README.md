@@ -1,16 +1,25 @@
-# 🥊 67-Fighter
-
-> **Platform Fighter game** dành cho 2 người chơi (hoặc 1 người vs Bot), được xây dựng bằng **Java + JavaFX + FXGL**.
+<div align="center">
+  <h1 id="title">🥊 67-Fighter</h1>
+  <p>
+    <a href="#-tiếng-việt">Tiếng Việt</a> | <a href="#-english">English</a>
+  </p>
+</div>
 
 ---
 
-## 📸 Screenshots
+## 🇻🇳 Tiếng Việt
 
-| Main Menu | Map Select – Factory |
+> **Game đấu trường platformer** dành cho 2 người chơi (hoặc 1 người vs Bot), được xây dựng bằng **Java + JavaFX + FXGL**.
+
+---
+
+## 📸 Ảnh chụp màn hình
+
+| Menu Chính | Chọn Bản đồ – Factory |
 |:---------:|:--------------------:|
 | ![Main Menu](docs/screenshots/menu.png) | ![Map Select - Factory](docs/screenshots/selectmap1.png) |
 
-| Gameplay – Sweetday | Map Select – Greenzone |
+| Gameplay – Sweetday | Chọn Bản đồ – Greenzone |
 |:-------------------:|:----------------------:|
 | ![Gameplay - Sweetday](docs/screenshots/selectmap2.png) | ![Map Select - Greenzone](docs/screenshots/ingame.png) |
 
@@ -18,7 +27,7 @@
 
 ## 📖 Giới thiệu
 
-**67-Fighter** là một game đấu trường dạng platformer 2D. Hai nhân vật chiến đấu trên các màn chơi khác nhau bằng cách bắn đạn, nhặt vũ khí từ thùng đạn (crate) và đẩy nhau ra khỏi sân đấu. Người chơi nào hết mạng trước sẽ thua.
+**67-Fighter** là một game đấu trường dạng platformer 2D. Hai nhân vật chiến đấu trên các màn chơi khác nhau bằng cách bắn đạn, nhặt vũ khí từ thùng đạn.
 
 Dự án được thực hiện bởi **Nhóm 67**.
 
@@ -172,3 +181,176 @@ fighter67/
 Dự án được thực hiện bởi **Nhóm 67** trong môn học lập trình hướng đối tượng.
 
 ---
+
+## 🇬🇧 English
+
+> **Platform Fighter game** for 2 players (or 1 player vs Bot), built with **Java + JavaFX + FXGL**.
+
+---
+
+## 📸 Screenshots
+
+| Main Menu | Map Select – Factory |
+|:---------:|:--------------------:|
+| ![Main Menu](docs/screenshots/menu.png) | ![Map Select - Factory](docs/screenshots/selectmap1.png) |
+
+| Gameplay – Sweetday | Map Select – Greenzone |
+|:-------------------:|:----------------------:|
+| ![Gameplay - Sweetday](docs/screenshots/selectmap2.png) | ![Map Select - Greenzone](docs/screenshots/ingame.png) |
+
+---
+
+## 📖 Introduction
+
+**67-Fighter** is a 2D platformer-style fighting game. Two characters battle on different maps by shooting bullets and picking up weapons from ammo crates scattered across the arena.
+
+The project was developed by **Group 67**.
+
+---
+
+## ✨ Features
+
+### 🎮 Gameplay
+- **2 Game Modes:**
+  - `Casual PvP` — 2 players on the same keyboard
+  - `Hard Bot Mode` — 1 player against AI opponent
+- **Health & Lives System:** Each player has 100 HP and 5 lives. Losing all lives means defeat.
+- **Rich Weapon System** — Collect from crates randomly placed on the map:
+
+| Weapon | Ammo | Fire Rate | Characteristics |
+|--------|------|-----------|----------|
+| 🔫 Pistol | 7 | 0.3s | Default weapon, auto-reloads |
+| 🪃 Shotgun | 6 | 1.0s | High damage, fires multiple bullets |
+| 🎯 Rifle (AWM) | 5 | 2.0s | Extremely fast bullet speed, high damage |
+| ⚡ Uzi | 40 | 0.05s | Extremely fast fire rate |
+| 💥 AK | 30 | 0.1s | Balanced damage and fire rate |
+
+- **Advanced Movement Mechanics:**
+  - Double jump
+  - Dash (double-tap direction to rush forward)
+  - One-way platform penetration
+  - Fast fall (accelerated fall through soft platforms)
+  - Hitstun when hit by bullets
+
+### 🗺️ Maps
+**5 maps** with unique background music and color themes:
+
+| Name | Color Theme | Music |
+|-----|-----------|------|
+| 🌃 City of Lights | Sky Blue `#74b9ff` | menu_track_03 |
+| 🌿 Greenzone | Emerald `#55efc4` | menu_track_04 |
+| 🏭 Factory | Amber `#fdcb6e` | menu_track_05 |
+| 🍭 Sweetday | Pink `#fd79a8` | menu_track_06 |
+| 🌋 Volcano Valley | Red-Orange `#ff7675` | menu_track_07 |
+
+### 🤖 AI Bot
+- AI opponent follows a **state machine** with 4 states:
+  - `APPROACH` — Move closer when too far
+  - `HOLD` — Maintain ideal distance and shoot
+  - `RETREAT` — Back away when too close
+  - `GRAB_CRATE` — Grab nearest ammo crate
+- Bot can jump, double jump, fall through platforms, and only shoots when horizontally aligned with target.
+
+### 🎨 UI & Visual
+- Main menu with **automatic slideshow background** that changes per map
+- Button and title accent colors change based on the displayed map theme
+- Hover effects, slide-in animations, breathing title
+- HUD displays HP bar, remaining lives, current weapon, and ammo count
+- Camera tracks both players, auto-zooms in/out based on distance
+
+---
+
+## 🕹️ Controls
+
+### Player 1 (WASD)
+| Key | Action |
+|------|-----------|
+| `A` | Move left |
+| `D` | Move right |
+| `W` | Jump (press twice = double jump) |
+| `S` | Fall through platform below |
+| `F` | Shoot |
+| `A` + `A` (double-tap) | Dash left |
+| `D` + `D` (double-tap) | Dash right |
+
+### Player 2 (Arrow Keys)
+| Key | Action |
+|------|-----------|
+| `←` | Move left |
+| `→` | Move right |
+| `↑` | Jump (press twice = double jump) |
+| `↓` | Fall through platform below |
+| `L` | Shoot |
+| `←` + `←` (double-tap) | Dash left |
+| `→` + `→` (double-tap) | Dash right |
+
+---
+
+## 🏗️ Technologies Used
+
+| Component | Technology |
+|-----------|-----------|
+| Language | Java 21 |
+| UI Framework | JavaFX 21.0.2 |
+| Game Engine | [FXGL 21](https://github.com/AlmasB/FXGL) |
+| Build Tool | Apache Maven |
+| Map Format | Tiled (.tmx) |
+| Physics | Box2D (via FXGL) |
+
+---
+
+## 🚀 How to Run the Game
+
+### Requirements
+- **JDK 21** or higher
+- **Maven 3.8+**
+
+### Run with Maven
+```bash
+# Clone repo
+git clone https://github.com/mrmommo/fighter67.git
+cd fighter67
+
+# Run game
+mvn javafx:run
+```
+
+### Build JAR file
+```bash
+mvn package
+java -jar target/fighter67-1.0-SNAPSHOT.jar
+```
+
+---
+
+## 📁 Project Structure
+
+```
+fighter67/
+├── src/main/java/com/nhom67/platformfighter/
+│   ├── app/                    # Entry point (FighterApp, AppSceneFactory)
+│   ├── ai/                     # AI Bot logic
+│   ├── controllers/            # Input & collision handlers
+│   │   ├── input/              # Key bindings for P1 & P2
+│   │   └── collisions/         # Physics collision handling
+│   ├── core/                   # GameMode, RoundManager, CameraController
+│   ├── entity/                 # EntityFactory, EntityType
+│   │   └── component/          # PlayerComponent, WeaponData, BulletComponent...
+│   ├── map/                    # MapLoader, MapRegistry
+│   ├── scene/                  # Menu, Select, GameOver scenes & controllers
+│   └── util/                   # SoundManager
+└── src/main/resources/assets/
+    ├── levels/                 # Tiled map files (.tmx)
+    ├── textures/               # Sprites, background images
+    ├── guns/                   # Weapon images
+    ├── bullet/                 # Bullet effects
+    ├── music/                  # Map background music
+    ├── sounds/                 # Gun sounds, click sounds...
+    └── ui/                     # FXML layouts + CSS
+```
+
+---
+
+## 👥 Development Team
+
+The project was developed by **Group 67** for an Object-Oriented Programming course.
