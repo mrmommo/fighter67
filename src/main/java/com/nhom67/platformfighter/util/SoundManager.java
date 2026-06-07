@@ -1,70 +1,112 @@
 package com.nhom67.platformfighter.util;
 
-import com.almasb.fxgl.audio.Music;
 import com.almasb.fxgl.audio.Sound;
 import com.almasb.fxgl.dsl.FXGL;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 import static com.almasb.fxgl.dsl.FXGL.*;
 
 public class SoundManager {
 
     private static volatile double sfxVolume = 0.5;
     private static volatile double musicVolume = 0.5;
-    private static volatile Music currentMusic;
+    private static MediaPlayer currentMusicPlayer; // ⭐ Dùng MediaPlayer thay Music
+    private static String currentMusicPath = "";
 
     public static void init() {
         FXGL.getSettings().setGlobalMusicVolume(musicVolume);
         FXGL.getSettings().setGlobalSoundVolume(sfxVolume);
     }
 
-    // Phát âm thanh click cơ bản
     public static void playClickSound() {
-        playSound("click.wav"); // Tên file âm thanh có sẵn trong thư mục sfx
+        playSound("click.wav");
     }
 
-    // Phát một hiệu ứng âm thanh (SFX)
     public static void playSound(String fileName) {
         try {
-            Sound sound = getAssetLoader().loadSound(fileName); // FXGL tự động tìm trong assets/sounds/
+            Sound sound = getAssetLoader().loadSound(fileName);
             getAudioPlayer().playSound(sound);
         } catch (Exception e) {
             System.err.println("SoundManager: Không tìm thấy âm thanh: " + fileName);
         }
     }
 
-    private static volatile String currentMusicName = "";
-
-    // Phát nhạc nền (lặp lại)
+    // ⭐ Phát nhạc bằng MediaPlayer (tránh được bug FXGL)
     public static void playMusic(String fileName) {
-        if (currentMusic != null && currentMusicName.equals(fileName)) {
-            return; // Nếu đang phát bài này thì bỏ qua (không khởi động lại)
+        if (currentMusicPath.equals(fileName) && currentMusicPlayer != null
+                && currentMusicPlayer.getStatus() == MediaPlayer.Status.PLAYING) {
+            return;
         }
+
         stopMusic();
+
         try {
-            currentMusic = getAssetLoader().loadMusic(fileName);
-            currentMusicName = fileName;
-            getAudioPlayer().loopMusic(currentMusic);
+            String resourcePath = SoundManager.class.getResource("/assets/music/" + fileName).toExternalForm();
+            Media media = new Media(resourcePath);
+            currentMusicPlayer = new MediaPlayer(media);
+            currentMusicPlayer.setCycleCount(MediaPlayer.INDEFINITE);
+            currentMusicPlayer.setVolume(musicVolume);
+            currentMusicPlayer.play();
+            currentMusicPath = fileName;
+            System.out.println("[SoundManager] Playing music: " + fileName);
         } catch (Exception e) {
             System.err.println("SoundManager: Không tìm thấy nhạc nền: " + fileName);
+            e.printStackTrace();
         }
     }
 
-    // Phát nhạc một lần duy nhất (không lặp)
     public static void playMusicOnce(String fileName) {
         stopMusic();
+
         try {
-            currentMusic = getAssetLoader().loadMusic(fileName);
-            currentMusicName = fileName;
-            getAudioPlayer().playMusic(currentMusic);
+            String resourcePath = SoundManager.class.getResource("/assets/music/" + fileName).toExternalForm();
+            Media media = new Media(resourcePath);
+            currentMusicPlayer = new MediaPlayer(media);
+            currentMusicPlayer.setCycleCount(1);
+            currentMusicPlayer.setVolume(musicVolume);
+            currentMusicPlayer.play();
+            currentMusicPath = fileName;
+            System.out.println("[SoundManager] Playing music once: " + fileName);
         } catch (Exception e) {
             System.err.println("SoundManager: Không tìm thấy nhạc: " + fileName);
+            e.printStackTrace();
         }
     }
 
+    // ⭐ Stop hoàn toàn và xóa reference
     public static void stopMusic() {
         try {
-            getAudioPlayer().stopAllMusic();
-            currentMusic = null;
-            currentMusicName = "";
+            if (currentMusicPlayer != null) {
+                currentMusicPlayer.stop();
+                currentMusicPlayer.dispose(); // ⭐ Giải phóng tài nguyên
+                currentMusicPlayer = null;
+            }
+            currentMusicPath = "";
+            System.out.println("[SoundManager] Music stopped");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    // ⭐ Pause nhạc
+    public static void pauseMusic() {
+        try {
+            if (currentMusicPlayer != null && currentMusicPlayer.getStatus() == MediaPlayer.Status.PLAYING) {
+                currentMusicPlayer.pause();
+                System.out.println("[SoundManager] Music paused");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    // ⭐ Resume nhạc
+    public static void resumeMusic() {
+        try {
+            if (currentMusicPlayer != null && currentMusicPlayer.getStatus() == MediaPlayer.Status.PAUSED) {
+                currentMusicPlayer.play();
+                System.out.println("[SoundManager] Music resumed");
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -78,6 +120,9 @@ public class SoundManager {
     public static void setMusicVolume(double volume) {
         musicVolume = volume;
         FXGL.getSettings().setGlobalMusicVolume(volume);
+        if (currentMusicPlayer != null) {
+            currentMusicPlayer.setVolume(volume);
+        }
     }
 
     public static double getMusicVolume() {
