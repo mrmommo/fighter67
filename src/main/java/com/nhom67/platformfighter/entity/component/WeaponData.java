@@ -13,7 +13,7 @@ public record WeaponData(
         return new WeaponData(
                 WeaponType.PISTOL,
                 new BulletData(10, 700, 8, 12, 600, 5),
-                7, 0.3, true, 1);
+                7, 0.3, true, 2);
     }
 
     public static WeaponData shotgun() {
@@ -40,6 +40,6 @@ public record WeaponData(
         return new WeaponData(
                 WeaponType.AK,
                 new BulletData(12, 800, 8, 12, 600, 5),
-                30, 0.1, false, 5);
+                30, 0.1, false, 8);
     }
 }

@@ -3,7 +3,9 @@ package com.nhom67.platformfighter.entity.component;
 import com.almasb.fxgl.entity.Entity;
 import com.almasb.fxgl.entity.SpawnData;
 import com.almasb.fxgl.entity.component.Component;
+import com.almasb.fxgl.entity.components.CollidableComponent;
 import com.almasb.fxgl.physics.PhysicsComponent;
+import com.almasb.fxgl.physics.box2d.dynamics.BodyType;
 import com.almasb.fxgl.time.LocalTimer;
 import static com.almasb.fxgl.dsl.FXGL.*;
 
@@ -27,7 +29,7 @@ public class PlayerComponent extends Component {
     private double currentSpeedX = 0;
     private double maxSpeed = 250;
     private double acceleration = 800;
-    private double friction = 1000;
+    private double friction = 1800;
     private int moveDirection = 0; // -1 left, 1 right, 0 stop
     private int facingDirection = 1; // 1 right, -1 left
 
@@ -49,6 +51,7 @@ public class PlayerComponent extends Component {
     private int maxLives = 5;
     private int currentLives = maxLives;
     private boolean isDead = false;
+    private boolean isRespawning = false;
 
     private boolean isHitStunned = false;
     private LocalTimer hitStunTimer;
@@ -104,6 +107,7 @@ public class PlayerComponent extends Component {
     }
 
     public void leftPress() {
+        if (isRespawning) return;
         if (dashCooldownTimer.elapsed(javafx.util.Duration.seconds(0.5))) {
             if (!leftTapTimer.elapsed(javafx.util.Duration.seconds(0.25))) {
                 currentSpeedX = -dashSpeed;
@@ -116,6 +120,7 @@ public class PlayerComponent extends Component {
     }
 
     public void rightPress() {
+        if (isRespawning) return;
         if (dashCooldownTimer.elapsed(javafx.util.Duration.seconds(0.5))) {
             if (!rightTapTimer.elapsed(javafx.util.Duration.seconds(0.25))) {
                 currentSpeedX = dashSpeed;
@@ -132,6 +137,7 @@ public class PlayerComponent extends Component {
     }
 
     public void jump() {
+        if (isRespawning) return;
         if (jumps == 0)
             return;
         physics.setVelocityY(-550); // Lực nhảy
@@ -147,6 +153,7 @@ public class PlayerComponent extends Component {
     }
 
     public void dropDown() {
+        if (isRespawning) return;
         if (!isDropping && physics.isOnGround()) {
             isDropping = true;
             dropTimer.capture();
@@ -156,6 +163,11 @@ public class PlayerComponent extends Component {
 
     @Override
     public void onUpdate(double tpf) {
+        if (isRespawning) {
+            physics.setVelocityX(0);
+            physics.setVelocityY(0);
+            return;
+        }
         // --- HITSTUN (Đứng hình & mất trọng lực khi trúng đạn) ---
         if (isHitStunned) {
             if (hitStunTimer.elapsed(Duration.seconds(hitStunDuration))) {
@@ -179,7 +191,7 @@ public class PlayerComponent extends Component {
 
         // --- WEAPON RELOAD LOGIC ---
         if (isReloading && currentWeapon.isDefault()) {
-            if (reloadTimer.elapsed(Duration.seconds(2.0))) {
+            if (reloadTimer.elapsed(Duration.seconds(1.0))) {
                 currentAmmo = currentWeapon.maxAmmo();
                 isReloading = false;
             }
@@ -306,6 +318,7 @@ public class PlayerComponent extends Component {
     // --- WEAPON & SHOOTING METHODS ---
 
     public void shoot() {
+        if (isRespawning) return;
         if (isDead || isReloading)
             return;
 
@@ -406,25 +419,40 @@ public class PlayerComponent extends Component {
     }
 
     public void loseLife() {
+        isRespawning = true;
+
         Point2D deathPosition = entity.getPosition();
 
         spawn("deathEffect", new SpawnData(deathPosition));
 
-        if (isDead)
-            return;
-
+        getEntity().setOpacity(0);
+        physics.setBodyType(BodyType.STATIC);
+        getEntity().getComponent(CollidableComponent.class)
+                .setValue(false);
         currentLives--;
-        currentHealth = maxHealth;
 
-        if (currentLives <= 0) {
-            isDead = true;
-        } else {
-            respawn();
-        }
+        getGameTimer().runOnceAfter(() -> {
+            getEntity().setOpacity(1);
+            physics.setBodyType(BodyType.DYNAMIC);
+            getEntity().getComponent(CollidableComponent.class)
+                    .setValue(true);
+
+            isRespawning = false;
+
+            if (isDead) return;
+            currentHealth = maxHealth;
+
+            if (currentLives <= 0) {
+                isDead = true;
+            } else {
+                getEntity().setOpacity(1);
+                respawn();
+            }
+        }, Duration.seconds(1));
     }
 
     public void respawn() {
-        physics.overwritePosition(new javafx.geometry.Point2D(spawnX, spawnY));
+        physics.overwritePosition(new Point2D(spawnX, spawnY));
         physics.setVelocityX(0);
         physics.setVelocityY(0);
         currentSpeedX = 0;
