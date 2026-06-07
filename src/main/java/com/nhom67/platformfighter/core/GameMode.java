@@ -1,8 +1,8 @@
 package com.nhom67.platformfighter.core;
 
 public enum GameMode {
-    TWO_PLAYER("2 Người chơi"),
-    VS_BOT("VS BOT");
+    TWO_PLAYER("Casual PvP"),
+    VS_BOT("Hard Bot Mode");
 
     private final String displayName;
 

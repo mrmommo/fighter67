@@ -80,7 +80,7 @@ public class MenuScene extends FXGLMenu {
         startFireflyEffect();
 
         // 3. Tự động trượt nền (Auto Slide)
-        autoSlide = new Timeline(new KeyFrame(Duration.seconds(3), e -> {
+        autoSlide = new Timeline(new KeyFrame(Duration.seconds(6), e -> {
             if (!isAnimating) {
                 slideBackground(1);
             }
