@@ -1,11 +1,18 @@
 package com.nhom67.platformfighter.entity.component;
 
 import com.almasb.fxgl.dsl.FXGL;
+import com.almasb.fxgl.entity.Entity;
 import com.almasb.fxgl.entity.component.Component;
+import javafx.animation.ParallelTransition;
+import javafx.animation.ScaleTransition;
 import javafx.geometry.Point2D;
+import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
+import javafx.scene.paint.CycleMethod;
+import javafx.scene.paint.LinearGradient;
+import javafx.scene.paint.Stop;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
@@ -79,34 +86,66 @@ public class BulletViewComponent extends Component {
     }
 
     public static void spawnHitEffect(double worldX, double worldY) {
-        Text hitText = new Text("HIT");
-        hitText.setFont(Font.font("Arial", FontWeight.EXTRA_BOLD, 30));
-        hitText.setFill(Color.YELLOW);
-        hitText.setStroke(Color.ORANGE);
-        hitText.setStrokeWidth(1.5);
+        Text hitText = new Text("HIT!");
 
-        var viewport = FXGL.getGameScene().getViewport();
+        // 1. Đổi sang font "Impact" dày và mạnh mẽ hơn Arial, kích thước lớn hơn một chút
+        hitText.setFont(Font.font("Impact", FontWeight.BOLD, 15));
 
-        // ✅ Tính screen coords, có xét đến zoom của viewport
-        double zoom = viewport.getZoom();
-        double screenX = (worldX - viewport.getX()) * zoom;
-        double screenY = (worldY - viewport.getY()) * zoom;
+        // 2. Tạo màu Gradient đổ từ Cam xuống Vàng (nhìn như hiệu ứng rực cháy)
+        LinearGradient gradient = new LinearGradient(
+                0, 0, 0, 1, true, CycleMethod.NO_CYCLE,
+                new Stop(0, Color.ORANGE),
+                new Stop(1, Color.YELLOW)
+        );
+        hitText.setFill(gradient);
 
-        // ✅ Căn giữa text (ước lượng; Text chưa layout nên dùng offset cố định)
-        hitText.setTranslateX(screenX - 16); // ~half width của "HIT" ở 18pt
-        hitText.setTranslateY(screenY);
+        // Đường viền dày màu đỏ đậm để làm nổi bật chữ
+        hitText.setStroke(Color.DARKRED);
+        hitText.setStrokeWidth(1);
 
-        FXGL.getGameScene().addUINode(hitText);
+        // 3. Thêm hiệu ứng bóng đổ (DropShadow) giúp chữ tách biệt hoàn toàn khỏi nền game
+        DropShadow dropShadow = new DropShadow();
+        dropShadow.setOffsetX(3.0);
+        dropShadow.setOffsetY(3.0);
+        dropShadow.setColor(Color.BLACK);
+        dropShadow.setRadius(2.0);
+        hitText.setEffect(dropShadow);
 
-        TranslateTransition moveUp = new TranslateTransition(Duration.seconds(0.5), hitText);
-        moveUp.setByY(-40);
+        // Góc nghiêng ngẫu nhiên nhẹ nhàng (từ -20 đến 20 độ) để tránh bị quá méo chữ
+        double randomAngle = (Math.random() - 0.5) * 40;
+        hitText.setRotate(randomAngle);
 
-        FadeTransition fadeOut = new FadeTransition(Duration.seconds(0.5), hitText);
+        // Tính toán tọa độ hiển thị trên màn hình
+        Entity hitEntity = FXGL.entityBuilder()
+                .at(worldX, worldY) // Đặt trực tiếp tọa độ thế giới (world coords) ở đây
+                .view(hitText)      // Dùng chữ HIT làm hình ảnh hiển thị
+                .buildAndAttach();  // Tạo và gắn vào map
+
+        // Căn giữa tương đối dựa trên font size mới
+
+
+
+        // --- THAY ĐỔI CẤU HÌNH HOẠT ẢNH Ở ĐÂY ---
+
+        // Chia thời gian: Phóng to thật nhanh (0.15 giây) rồi mờ dần (0.6 giây)
+        Duration scaleDuration = Duration.seconds(0.15);
+        Duration fadeDuration = Duration.seconds(0.6);
+
+        // 1. Hoạt ảnh PHÌNH TO RA tại chỗ (chạy trước)
+        ScaleTransition scale = new ScaleTransition(scaleDuration, hitText);
+        scale.setFromX(0.8);
+        scale.setFromY(0.8);
+        scale.setToX(1.8);
+        scale.setToY(1.8);
+
+        // 2. Hoạt ảnh mờ dần (chạy sau)
+        FadeTransition fadeOut = new FadeTransition(fadeDuration, hitText);
         fadeOut.setFromValue(1.0);
         fadeOut.setToValue(0.0);
         fadeOut.setOnFinished(e -> FXGL.getGameScene().removeUINode(hitText));
 
-        moveUp.play();
-        fadeOut.play();
+        // Sử dụng SequentialTransition để ép buộc scale xong xuôi mới tới fadeOut
+        javafx.animation.SequentialTransition sequential = new javafx.animation.SequentialTransition(scale, fadeOut);
+        sequential.play();
     }
 }
