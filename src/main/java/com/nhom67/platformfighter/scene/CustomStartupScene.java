@@ -27,14 +27,14 @@ public class CustomStartupScene extends StartupScene {
         try {
             Image logo = new Image(
                     Objects.requireNonNull(
-                            getClass().getResourceAsStream("/assets/textures/ui/icon.png")));
+                            getClass().getResourceAsStream("/assets/textures/ui/icon1.png")));
             logoView.setImage(logo);
         } catch (Exception e) {
             System.err.println("[CustomStartupScene] Không tải được icon.png: " + e.getMessage());
         }
 
         logoView.setPreserveRatio(true);
-        logoView.setFitHeight(appHeight * 0.2);
+        logoView.setFitHeight(appHeight * 0.1);
         logoView.setSmooth(true);
 
         StackPane root = new StackPane(bg, logoView);
