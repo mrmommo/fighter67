@@ -1,17 +1,13 @@
 <div align="center">
-
-<h1 id="title">🥊 67-Fighter</h1>
-
-<div id="languageToggle" style="text-align: center; margin: 10px 0;">
-  <button id="langBtn" style="padding: 8px 16px; border: 2px solid #74b9ff; border-radius: 5px; background: #74b9ff; color: white; cursor: pointer; font-weight: bold; transition: all 0.3s;">
-    English / Tiếng Việt
-  </button>
+  <h1 id="title">🥊 67-Fighter</h1>
+  <p>
+    <a href="#-tiếng-việt">Tiếng Việt</a> | <a href="#-english">English</a>
+  </p>
 </div>
 
 ---
 
-<!-- VIETNAMESE VERSION -->
-<div id="vi-content">
+## 🇻🇳 Tiếng Việt
 
 > **Game đấu trường platformer** dành cho 2 người chơi (hoặc 1 người vs Bot), được xây dựng bằng **Java + JavaFX + FXGL**.
 
@@ -184,10 +180,9 @@ fighter67/
 
 Dự án được thực hiện bởi **Nhóm 67** trong môn học lập trình hướng đối tượng.
 
-</div>
+---
 
-<!-- ENGLISH VERSION -->
-<div id="en-content" style="display: none;">
+## 🇬🇧 English
 
 > **Platform Fighter game** for 2 players (or 1 player vs Bot), built with **Java + JavaFX + FXGL**.
 
@@ -359,30 +354,3 @@ fighter67/
 ## 👥 Development Team
 
 The project was developed by **Group 67** for an Object-Oriented Programming course.
-
-</div>
-
----
-
-<script>
-// Language toggle script
-document.getElementById('langBtn').addEventListener('click', function() {
-  const viContent = document.getElementById('vi-content');
-  const enContent = document.getElementById('en-content');
-  const btn = document.getElementById('langBtn');
-  
-  if (viContent.style.display === 'none') {
-    // Show Vietnamese
-    viContent.style.display = 'block';
-    enContent.style.display = 'none';
-    btn.textContent = 'English / Tiếng Việt';
-  } else {
-    // Show English
-    viContent.style.display = 'none';
-    enContent.style.display = 'block';
-    btn.textContent = 'Vietnamese / English';
-  }
-});
-</script>
-
-</div>
